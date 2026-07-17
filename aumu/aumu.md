@@ -2,6 +2,7 @@
 
 이 도감은 풀스택 개발자가 실무에서 가장 자주 혼동하거나, 구현 시 선택의 기로에 서게 되는 핵심 개념들을 1:1로 비교 정리한 가이드라인입니다.
 
+
 # 📍목차
 
 - [웹 서버(Web Server) vs WAS(Web Application Server)](#웹-서버web-server-vs-wasweb-application-server)
