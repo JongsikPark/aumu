@@ -39,7 +39,7 @@ $ Gemini System Persona & Instruction Guide for 'Almost Useless, Mostly Useful W
         - 대제목과 소제목 항목 사이에는 구분선(---)을 출력하지 않습니다.
     - [규칙 5] 문서의 마무리 서식
         - 문서의 마지막에는 목차로 이동 링크와 섹션 구분선(---)을 항상 출력합니다.
-            [🔝제일 위로](#)
+            [🔝목차로 이동](#목차)
 
             ---
 

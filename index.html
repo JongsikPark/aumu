@@ -18,20 +18,32 @@
             name: '거의 쓸모없지만, 대체로 유용할지도 모르는 풀스택 웹 개발자를 위한 도감 (Almost Useless, Mostly Useful Wiki For Full-Stack Web Developer)',          // 사이트 상단에 노출될 이름
             maxLevel: 1, // 좌측에 표시할 문서 내 헤더의 깊이(#, ##, ###)
             homepage: 'mds/aumu.md', // 페이지 변경
-            // 마크다운 파서의 slugify 함수를 한글 지원용으로 커스텀
+            // 1. 마크다운 표준 링크(.md)를 docsify 라우팅으로 자동 변환
             markdown: {
-                slugify: function(text) {
-                    return text
-                    .toLowerCase()
-                    // 공백을 하이픈(-)으로 변경
-                    .replace(/\s+/g, '-')
-                    // 한글, 영문, 숫자, 하이픈, 언더바를 제외한 특수문자 제거 (한글 범위: \uac00-\ud7a3)
-                    .replace(/[^a-z0-9\-\_\uac00-\ud7a3]/g, '')
-                    // 연속된 하이픈 제거
-                    .replace(/-+/g, '-')
-                    // 앞뒤 하이픈 제거
-                    .replace(/^-+|-+$/g, '');
+            renderer: {
+                link: function(href, title, text) {
+                // 링크가 '.md'로 끝나거나 내부에 '.md#'를 포함하는 경우
+                if (href && (href.endsWith('.md') || href.includes('.md#'))) {
+                    // 주소창의 해시(/#/) 구조에 맞게 라우팅 경로를 패치합니다.
+                    const docsifyHref = href.replace(/^\.?\/?/, '/#/').replace('.md', '');
+                    return `<a href="${docsifyHref}" title="${title || ''}">${text}</a>`;
                 }
+                return this.origin.link(href, title, text);
+                }
+            },
+
+            // 2. [해결] 목차 내 이모지를 완벽히 제거하고 순수 텍스트로만 ID(슬러그) 생성
+            slugify: function(text) {
+                // 이모지 및 특수 유니코드 문자들을 먼저 제거합니다.
+                const cleanText = text.replace(/[\uE000-\uF8FF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|[\u2011-\u26FF]|\uD83E[\uDD10-\uDDFF]/g, '');
+                
+                return cleanText
+                            .toLowerCase()
+                            .replace(/\s+/g, '-') // 공백을 하이픈으로
+                            .replace(/[^a-z0-9\-\_\uac00-\ud7a3]/g, '') // 한글, 영문, 숫자, 하이픈, 언더바만 남김
+                            .replace(/-+/g, '-') // 연속 하이픈 정리
+                            .replace(/^-+|-+$/g, ''); // 앞뒤 하이픈 제거
+            }
             }
         };
         </script>
