@@ -20,6 +20,7 @@
 
 - [브라우저 쿠키(Cookie) vs 로컬 스토리지(Local Storage) vs 세션 스토리지(Session Storage)](#-브라우저-쿠키cookie-vs-로컬-스토리지local-storage-vs-세션-스토리지session-storage)
 
+
 # 📄웹 서버(Web Server) vs WAS(Web Application Server)
 
 ### 1) 10초 요약
@@ -81,6 +82,7 @@
 
 [🔝목차로 이동](#목차)
 
+
 # 인증(Authentication) vs 인가(Authorization)
 
 ### 1) 10초 요약
@@ -112,6 +114,7 @@
 `Authentication` / `Authorization` / `HTTP 401 Unauthorized` / `HTTP 403 Forbidden` / `Session-based Auth` / `JWT (JSON Web Token)` / `OAuth 2.0` / `OpenID Connect (OIDC)` / `RBAC (Role-Based Access Control)` / `ABAC (Attribute-Based Access Control)` / `Multi-Factor Authentication (MFA)` / `Single Sign-On (SSO)` / `Access Token` / `Refresh Token` / `Spring Security` / `Passport.js` / `ACL (Access Control List)`
 
 [🔝목차로 이동](#목차)
+
 
 ## 📄 [JWT vs 세션(Session) 인증]
 
