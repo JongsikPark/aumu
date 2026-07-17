@@ -84,7 +84,7 @@
 [🔝목차로 이동](#목차)
 
 
-# 인증(Authentication) vs 인가(Authorization)
+# 📄인증(Authentication) vs 인가(Authorization)
 
 ### 1) 10초 요약
 * **인증 (Authentication, AuthN)**: "당신은 누구십니까?"를 확인하는 과정으로, 아이디/비밀번호 입력이나 생체 인식 등을 통해 사용자의 신원(Identity)을 증명하는 절차입니다.
