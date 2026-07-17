@@ -4,6 +4,12 @@
 
 ---
 
+## 📝퀴즈도 한 번 풀어보기
+
+❓ **[Quiz 풀기 바로가기](quiz.md)**
+
+---
+
 # 📍목차
 
 - [웹 서버(Web Server) vs WAS(Web Application Server)](#웹-서버web-server-vs-wasweb-application-server)
@@ -52,7 +58,7 @@
 ### 4) 관련 키워드
 `Nginx` / `Apache HTTP Server` / `IIS` / `Apache Tomcat` / `Node.js (Express)` / `Django` / `Spring Boot` / `정적 콘텐츠(Static Content)` / `동적 콘텐츠(Dynamic Content)` / `리버스 프록시(Reverse Proxy)` / `포워드 프록시(Forward Proxy)` / `로드 밸런싱(Load Balancing)` / `무중단 배포(Blue-Green, Rolling)` / `CGI(Common Gateway Interface)` / `WSGI(Web Server Gateway Interface)` / `SSL/TLS Termination(보안 인증서 앞단 처리)` / `Keep-Alive Connection` / `PM2(Node 프로세스 관리)`
 
-[🔝목차로 이동](#목차)
+[🔝제일 위로](#)
 
 ---
 
@@ -87,7 +93,7 @@
 ### 4) 관련 키워드
 `MySQL` / `PostgreSQL` / `Oracle` / `MongoDB` / `Redis` / `Cassandra` / `DynamoDB` / `ACID (Atomicity, Consistency, Isolation, Durability)` / `BASE (Basically Available, Soft state, Eventual consistency)` / `CAP 이론 (Consistency, Availability, Partition tolerance)` / `트랜잭션(Transaction)` / `조인 연산(JOIN)` / `인덱싱(Indexing)` / `정규화(Normalization)` / `역정규화(Denormalization)` / `수직 확장(Scale-up)` / `수평 확장(Scale-out)` / `샤딩(Sharding)` / `복제(Replication)` / `클러스터링(Clustering)` / `Schema-less`
 
-[🔝목차로 이동](#목차)
+[🔝제일 위로](#)
 
 ---
 
@@ -121,7 +127,7 @@
 ### 4) 관련 키워드
 `Authentication` / `Authorization` / `HTTP 401 Unauthorized` / `HTTP 403 Forbidden` / `Session-based Auth` / `JWT (JSON Web Token)` / `OAuth 2.0` / `OpenID Connect (OIDC)` / `RBAC (Role-Based Access Control)` / `ABAC (Attribute-Based Access Control)` / `Multi-Factor Authentication (MFA)` / `Single Sign-On (SSO)` / `Access Token` / `Refresh Token` / `Spring Security` / `Passport.js` / `ACL (Access Control List)`
 
-[🔝목차로 이동](#목차)
+[🔝제일 위로](#)
 
 ---
 
@@ -148,7 +154,7 @@
 ### 4) 관련 키워드
 `Cookie` / `Redis` / `Stateless` / `Stateful` / `OAuth` / `Refresh Token` / `Access Token` / `Payload` / `Header` / `Signature` / `XSS` / `CSRF` / `Scalability` / `Session ID` / `HMAC` / `RS256` / `Authorization Header` / `Bearer` / `Authentication` / `Authorization`
 
-[🔝목차로 이동](#목차)
+[🔝제일 위로](#)
 
 ---
 
@@ -190,7 +196,7 @@
 
 `SPA` / `MPA` / `SEO` / `TTV (Time To View)` / `TTI (Time To Interactive)` / `Hydration` / `Next.js` / `Vite` / `Static Site Generation (SSG)` / `Web Vitals` / `FCP (First Contentful Paint)` / `LCP (Largest Contentful Paint)` / `Client Component` / `Server Component` / `Prerendering` / `Search Engine Crawler`
 
-[🔝목차로 이동](#목차)
+[🔝제일 위로](#)
 
 ---
 
@@ -230,7 +236,7 @@
 ### 4) 관련 키워드
 `In-Memory` / `RAM vs Disk` / `Cache-Aside Pattern` / `Write-Through Pattern` / `ACID Transactions` / `Single-Threaded Event Loop` / `Key-Value Store` / `Sorted Set (ZSET)` / `Data Persistence (RDB/AOF)` / `Session Clustering` / `Database Bottleneck` / `Replica & Sentinel` / `Redis Cluster` / `Cache Hit & Cache Miss` / `TTL (Time To Live)` / `Eviction Policy` / `Connection Pooling`
 
-[🔝목차로 이동](#목차)
+[🔝제일 위로](#)
 
 ---
 
@@ -267,7 +273,7 @@
 ### 4) 관련 키워드
 `CI/CD Pipeline` / `Jenkins` / `GitHub Actions` / `GitLab CI` / `ArgoCD (GitOps)` / `Lint & Static Analysis` / `Unit & Integration Testing` / `Build Automation` / `Docker & Containerization` / `Artifact Registry` / `Blue-Green Deployment` / `Canary Deployment` / `Rolling Update` / `Infrastructure as Code (IaC)` / `Webhook` / `Rollback` / `Regression Testing` / `Zero-Downtime Deployment`
 
-[🔝목차로 이동](#목차)
+[🔝제일 위로](#)
 
 ---
 
@@ -306,7 +312,7 @@
 ### 4) 관련 키워드
 `Client-Side Storage` / `Web Storage API` / `HttpOnly Cookie` / `Secure Flag` / `SameSite Attribute` / `XSS (Cross-Site Scripting)` / `CSRF (Cross-Site Request Forgery)` / `JWT (JSON Web Token)` / `Session ID` / `document.cookie` / `localStorage` / `sessionStorage` / `Expires / Max-Age` / `Single-Sign-On (SSO)` / `Quota Exceeded Error` / `Window.sessionStorage`
 
-[🔝목차로 이동](#목차)
+[🔝제일 위로](#)
 
 ---
 
@@ -369,6 +375,6 @@
 ### 4) 관련 키워드
 `EXPLAIN` / `EXPLAIN ANALYZE` / `Query Optimizer` / `Index Range Scan` / `Full Table Scan` / `Using filesort` / `Using temporary` / `Clustered Index` / `Secondary Index` / `Covering Index` / `B-Tree Index` / `Slow Query Log` / `Selectivity` / `Cardinality` / `Nested Loop Join` / `Driving Table` / `Driven Table` / `STRAIGHT_JOIN` / `Implicit Type Conversion`
 
-[🔝목차로 이동](#목차)
+[🔝제일 위로](#)
 
 ---
