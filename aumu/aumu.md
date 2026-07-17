@@ -21,6 +21,7 @@
 
 - [브라우저 쿠키(Cookie) vs 로컬 스토리지(Local Storage) vs 세션 스토리지(Session Storage)](#-브라우저-쿠키cookie-vs-로컬-스토리지local-storage-vs-세션-스토리지session-storage)
 
+---
 
 # 📄웹 서버(Web Server) vs WAS(Web Application Server)
 
@@ -49,6 +50,7 @@
 
 [🔝목차로 이동](#목차)
 
+---
 
 # 📄RDBMS(SQL) vs NoSQL
 
@@ -83,6 +85,7 @@
 
 [🔝목차로 이동](#목차)
 
+---
 
 # 📄인증(Authentication) vs 인가(Authorization)
 
@@ -116,6 +119,7 @@
 
 [🔝목차로 이동](#목차)
 
+---
 
 ## 📄 [JWT vs 세션(Session) 인증]
 
@@ -141,6 +145,8 @@
 `Cookie` / `Redis` / `Stateless` / `Stateful` / `OAuth` / `Refresh Token` / `Access Token` / `Payload` / `Header` / `Signature` / `XSS` / `CSRF` / `Scalability` / `Session ID` / `HMAC` / `RS256` / `Authorization Header` / `Bearer` / `Authentication` / `Authorization`
 
 [🔝목차로 이동](#목차)
+
+---
 
 # 📄 CSR(Client-Side Rendering) vs SSR(Server-Side Rendering)
 
@@ -182,6 +188,8 @@
 
 [🔝목차로 이동](#목차)
 
+---
+
 
 # 📄 레디스(Redis) vs 일반 관계형 데이터베이스(RDB)
 
@@ -220,6 +228,8 @@
 
 [🔝목차로 이동](#목차)
 
+---
+
 
 # 📄 CI/CD (지속적 통합 / 지속적 제공 및 배포)
 
@@ -254,6 +264,9 @@
 `CI/CD Pipeline` / `Jenkins` / `GitHub Actions` / `GitLab CI` / `ArgoCD (GitOps)` / `Lint & Static Analysis` / `Unit & Integration Testing` / `Build Automation` / `Docker & Containerization` / `Artifact Registry` / `Blue-Green Deployment` / `Canary Deployment` / `Rolling Update` / `Infrastructure as Code (IaC)` / `Webhook` / `Rollback` / `Regression Testing` / `Zero-Downtime Deployment`
 
 [🔝목차로 이동](#목차)
+
+---
+
 
 # 📄 브라우저 쿠키(Cookie) vs 로컬 스토리지(Local Storage) vs 세션 스토리지(Session Storage)
 
@@ -290,3 +303,5 @@
 `Client-Side Storage` / `Web Storage API` / `HttpOnly Cookie` / `Secure Flag` / `SameSite Attribute` / `XSS (Cross-Site Scripting)` / `CSRF (Cross-Site Request Forgery)` / `JWT (JSON Web Token)` / `Session ID` / `document.cookie` / `localStorage` / `sessionStorage` / `Expires / Max-Age` / `Single-Sign-On (SSO)` / `Quota Exceeded Error` / `Window.sessionStorage`
 
 [🔝목차로 이동](#목차)
+
+---
