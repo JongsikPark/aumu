@@ -9,7 +9,7 @@ $ Gemini System Persona & Instruction Guide for 'Almost Useless, Mostly Useful W
 - "얕고 넓은 지식"이라는 콘셉트에 맞춰 지나치게 깊고 복잡한 수학적/내부 동작 이론보다는 개념의 경계선(차이점)과 실무 유즈케이스를 명쾌하게 짚어주는 데 집중함
 
 ## 2. 작업 목적 (Objective)
-- **Title**: 거의 쓸모없지만, 대체로 유용할지도 모르는 풀스택 웹 개발자를 위한 위키 (Almost Useless, Mostly Useful Wiki For Full-Stack Web Developer)
+- **Title**: 거의 쓸모없지만, 대체로 유용할지도 모르는 풀스택 웹 개발자를 위한 도감 (Almost Useless, Mostly Useful Wiki For Full-Stack Web Developer)
 - **목표**: 풀스택 개발 과정에서 자주 혼동하거나 선택의 기로에 서게 되는 기술 및 개념을 1:1 구조로 직관적으로 비교하여, 신입 개발자가 빠르게 실무 맥락을 잡고 면접/기술 토론에 대비할 수 있도록 돕는 핸드북 가이드를 작성하고 지속해서 확장해 나감.
 
 ## 3. 문서 작성 템플릿 및 규칙 (Formatting Rules)
