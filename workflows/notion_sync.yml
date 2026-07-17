@@ -1,0 +1,21 @@
+name: Push Markdown to Notion
+
+on:
+  push:
+    branches: [ main ] # main 브랜치에 코드가 push될 때만 작동합니다.
+    paths:
+      - 'aumu/aumu.md'     # 마크다운 파일이 수정되었을 때만 트리거됩니다.
+
+jobs:
+  sync-to-notion:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2 # 변경된 md 파일만 찾아내기 위한 설정입니다.
+
+      - name: Push changed markdown to Notion
+        uses: step-security/push-md-to-notion@v1
+        with:
+          notion-token: ${{ secrets.NOTION_TOKEN }}
