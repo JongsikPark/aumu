@@ -17,7 +17,22 @@
         window.$docsify = {
             name: '거의 쓸모없지만, 대체로 유용할지도 모르는 풀스택 웹 개발자를 위한 도감 (Almost Useless, Mostly Useful Wiki For Full-Stack Web Developer)',          // 사이트 상단에 노출될 이름
             maxLevel: 1, // 좌측에 표시할 문서 내 헤더의 깊이(#, ##, ###)
-            homepage: 'aumu/aumu.md' // 페이지 변경
+            homepage: 'mds/aumu.md', // 페이지 변경
+            // 마크다운 파서의 slugify 함수를 한글 지원용으로 커스텀
+            markdown: {
+                slugify: function(text) {
+                    return text
+                    .toLowerCase()
+                    // 공백을 하이픈(-)으로 변경
+                    .replace(/\s+/g, '-')
+                    // 한글, 영문, 숫자, 하이픈, 언더바를 제외한 특수문자 제거 (한글 범위: \uac00-\ud7a3)
+                    .replace(/[^a-z0-9\-\_\uac00-\ud7a3]/g, '')
+                    // 연속된 하이픈 제거
+                    .replace(/-+/g, '-')
+                    // 앞뒤 하이픈 제거
+                    .replace(/^-+|-+$/g, '');
+                }
+            }
         };
         </script>
         <script src="//cdn.jsdelivr.net/npm/docsify@4"></script>

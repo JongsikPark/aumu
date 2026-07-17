@@ -2,6 +2,7 @@
 
 이 도감은 풀스택 개발자가 실무에서 가장 자주 혼동하거나, 구현 시 선택의 기로에 서게 되는 핵심 개념들을 1:1로 비교 정리한 가이드라인입니다.
 
+---
 
 # 📍목차
 
@@ -21,6 +22,8 @@
 
 - [브라우저 쿠키(Cookie) vs 로컬 스토리지(Local Storage) vs 세션 스토리지(Session Storage)](#-브라우저-쿠키cookie-vs-로컬-스토리지local-storage-vs-세션-스토리지session-storage)
 
+- [MariaDB 실행계획(Execution Plan) 및 쿼리 튜닝](#-mariadb-실행계획execution-plan-및-쿼리-튜닝)
+
 ---
 
 # 📄웹 서버(Web Server) vs WAS(Web Application Server)
@@ -30,6 +33,7 @@
 * **WAS (Web Application Server)**: 사용자나 조건에 따라 동적으로 변하는 응답(DB 조회 결과, 개인화된 화면 등)을 만들기 위해 비즈니스 로직(코드)을 구동하는 역할입니다.
 
 ### 2) 핵심 비교
+
 | 구분 | 웹 서버 (Web Server) | WAS (Web Application Server) |
 | :--- | :--- | :--- |
 | **주요 역할** | 정적 콘텐츠 제공, 클라이언트 요청의 1차 접수 | 동적 콘텐츠 생성, 비즈니스 로직 실행 |
@@ -301,6 +305,69 @@
 
 ### 4) 관련 키워드
 `Client-Side Storage` / `Web Storage API` / `HttpOnly Cookie` / `Secure Flag` / `SameSite Attribute` / `XSS (Cross-Site Scripting)` / `CSRF (Cross-Site Request Forgery)` / `JWT (JSON Web Token)` / `Session ID` / `document.cookie` / `localStorage` / `sessionStorage` / `Expires / Max-Age` / `Single-Sign-On (SSO)` / `Quota Exceeded Error` / `Window.sessionStorage`
+
+[🔝목차로 이동](#목차)
+
+---
+
+
+# 📄 MariaDB 실행계획(Execution Plan) 및 쿼리 튜닝
+
+### 1) 10초 요약
+* MariaDB 실행계획(`EXPLAIN`)은 옵티마이저가 쿼리를 수행하는 내부 경로를 보여주며, 이를 통해 전체 테이블 스캔(ALL)이나 비효율적인 조인 같은 성능 병목 구간을 탐색합니다.
+* 쿼리 튜닝은 분석 결과를 바탕으로 인덱스 생성 및 변경, 쿼리문 구조 개선, 조인 순서 조정 등을 거쳐 데이터베이스 디스크 I/O를 최소화하고 실행 속도를 끌어올리는 과정입니다.
+
+### 2) 핵심 요약
+
+| 구분 | MariaDB 실행계획 분석 및 쿼리 튜닝 |
+| :--- | :--- |
+| **주요 역할** | 작성한 SQL 쿼리가 데이터베이스 내부에서 실제로 어떻게 실행되는지(인덱스 사용 여부, 검색 범위, 정렬 방식 등) 사전 진단하여 성능 저하의 원인을 찾는 도구 |
+| **동작 방식** | - `EXPLAIN SELECT ...` : 옵티마이저가 예측한 가상의 실행 계획을 출력<br>- `EXPLAIN ANALYZE SELECT ...` : 쿼리를 실제로 실행하며 각 단계별 실시간 소요 시간과 처리된 행(Rows) 수를 측정 |
+| **핵심 분석 항목** | - **type (접근 방식)**: `const` / `ref` / `range`는 안전하지만, `index`(인덱스 풀 스캔), `ALL`(테이블 풀 스캔)은 튜닝 대상<br>- **key**: 실제로 사용된 인덱스 이름 (선택되지 않았다면 인덱스 미적용 상태)<br>- **rows**: 쿼리를 수행하기 위해 접근할 것으로 예측되는 행의 수<br>- **Extra**: `Using filesort`(메모리/디스크 정렬), `Using temporary`(임시 테이블 생성)는 심각한 병목 요인 |
+| **직관적 비유** | 운전하기 전, **내비게이션이 제안하는 추천 경로**(고속도로 vs 정체 구간 골목길)를 미리 확인하고 막히는 길을 우회하도록 목적지나 경유지를 최적화하는 과정 |
+| **장점 및 튜닝 효과** | 서비스 규모 확장 시 데이터양이 증가해도 쿼리 응답 속도를 일정하게 유지할 수 있으며, CPU 및 디스크 I/O 자원 낭비를 막아 인프라 비용 절감 |
+
+### 3) 실무 유즈케이스
+
+#### 시나리오 A: 슬로우 쿼리 로그에서 발견된 전체 테이블 스캔(ALL) 튜닝
+* **상황**: 가입자가 100만 명을 넘어선 서비스에서 "특정 날짜 범위의 주문 내역 조회" API 호출 시 3초 이상 지연되는 현상이 발생했습니다.
+* **진단 (`EXPLAIN`)**: 
+  ```sql
+  EXPLAIN SELECT * FROM orders WHERE order_date BETWEEN '2026-07-01' AND '2026-07-15';
+  ```
+  - 분석 결과 `type`이 `ALL`로 나타났고, `key`는 `NULL`, `rows`는 `1,200,000`개에 달했습니다. 즉, 주문 테이블 전체를 처음부터 끝까지 다 읽고 있었습니다.
+* **해결책 (인덱스 추가)**: `order_date` 컬럼에 단일 인덱스 혹은 자주 검색 조건으로 쓰이는 `user_id`와의 복합 인덱스를 생성합니다.
+  ```sql
+  CREATE INDEX idx_orders_date ON orders(order_date);
+  ```
+  - 인덱스 적용 후 다시 `EXPLAIN`을 돌려보니 `type`은 `range`로 개선되었고, `key`에는 `idx_orders_date`가 잡혔으며 `rows`가 단 `5,000`개로 급감해 성능이 0.01초대로 향상되었습니다.
+
+#### 시나리오 B: 인덱스가 걸려있는데 타지 않는 범인 색출 (묵시적 형변환 및 함수 사용)
+* **상황**: 회원 테이블의 휴대폰 번호(`phone_no`, VARCHAR 타입)에 분명 인덱스를 걸어두었는데, 검색 속도가 여전히 느립니다.
+* **진단 (`EXPLAIN`)**:
+  ```sql
+  EXPLAIN SELECT * FROM users WHERE phone_no = 01012345678;
+  ```
+  - 분석해보니 분명히 인덱스가 있음에도 `type`이 `ALL`로 찍힙니다. 원인은 `01012345678`을 숫자형으로 넣으면서, MariaDB 내부적으로 문자열 타입인 `phone_no` 컬럼의 모든 값을 숫자로 변환하는 **묵시적 형변환**이 일어나 인덱스를 사용하지 못했기 때문입니다.
+  - 또 다른 사례로 `WHERE YEAR(created_at) = 2026`처럼 좌변 컬럼을 가공하는 경우도 인덱스를 태우지 못합니다.
+* **해결책 (쿼리 리팩토링)**:
+  ```sql
+  -- 1) 데이터 타입을 컬럼에 맞춤 (문자열 리터럴로 감싸기)
+  EXPLAIN SELECT * FROM users WHERE phone_no = '01012345678';
+  
+  -- 2) 좌변 컬럼 가공 대신 우변 값을 범위로 조건 부여
+  EXPLAIN SELECT * FROM users WHERE created_at >= '2026-01-01' AND created_at < '2027-01-01';
+  ```
+  - 수정한 후 다시 실행계획을 확인해보면 정상적으로 `type: ref` 또는 `type: range`로 인덱스를 타는 것을 볼 수 있습니다.
+
+#### 시나리오 C: 대량의 조인(Join) 시 잘못된 드라이빙 테이블 선정 개선
+* **상황**: 3개 테이블을 조인하는 통계 쿼리 실행 시 `EXPLAIN` 분석 중 드라이빙 테이블(먼저 읽는 테이블)이 엄청나게 큰 테이블로 잡혀 불필요한 루프를 돌고 있습니다.
+* **진단 및 해결책 (`STRAIGHT_JOIN` 또는 인덱스 재정비)**:
+  - 데이터양이 가장 적고 필터링 조건이 잘 먹히는 테이블이 먼저 읽혀야(Driving) 효율적입니다.
+  - MariaDB 옵티마이저가 테이블 통계 정보를 오판하여 큰 테이블을 먼저 읽는 경우, `STRAIGHT_JOIN` 힌트를 사용하여 강제로 조인 순서를 제어하거나 테이블 통계치를 수동 갱신(`ANALYZE TABLE`)하여 스스로 최적의 경로를 찾게 유도합니다.
+
+### 4) 관련 키워드
+`EXPLAIN` / `EXPLAIN ANALYZE` / `Query Optimizer` / `Index Range Scan` / `Full Table Scan` / `Using filesort` / `Using temporary` / `Clustered Index` / `Secondary Index` / `Covering Index` / `B-Tree Index` / `Slow Query Log` / `Selectivity` / `Cardinality` / `Nested Loop Join` / `Driving Table` / `Driven Table` / `STRAIGHT_JOIN` / `Implicit Type Conversion`
 
 [🔝목차로 이동](#목차)
 
