@@ -1,38 +1,33 @@
-name: notion-md-gen
+name: Push Markdown to Notion
+
 on:
-  # On pull requests commits
-  # pull_request:
-  # Automatic trigger at 00:00 everyday
-  # schedule:
-  #   - cron: "0 0 * * *" # daily
-  # Manual trigger
   push:
     branches: [ main ]
     paths:
       - 'aumu/aumu.md'
+
 jobs:
-  auto-sync-from-notion-to-github:
+  sync-to-notion:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
-        # Make sure the actual branch is checked out when running on pull
-        # requests. Enable this if using "on: pull_request".
-        # with:
-          # ref: ${{ github.head_ref }}
-
-      - name: notion-md-gen
-        uses: bonaysoft/notion-md-gen@master
-        env:
-          # You need to generate an Integration token in Notion API page
-          NOTION_SECRET : ${{ secrets.NOTION_TOKEN }}
-
-      - name: Format documents
-        # We need prettier in order to commit the new files, and also it gives a
-        # better look to the Markdown.
-        uses: creyD/prettier_action@v3.1
+        uses: actions/checkout@v4
         with:
-          prettier_options: --write ./example/posts/**/*.md
-          commit_message: 'notion-md-gen: update articles (auto)'
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0 # 모든 변경 이력을 가져와 확실하게 diff를 비교합니다.
+
+      # 1. 이번 푸시에서 변경되거나 추가된 .md 파일 목록을 가져옵니다.
+      - name: Get changed files
+        id: changed-files
+        uses: tj-actions/changed-files@v45
+        with:
+          files: |
+            aumu/aumu.md
+
+      # 2. 변경된 파일이 있을 때만 노션으로 밀어 넣습니다.
+      - name: Push changed markdown to Notion
+        if: steps.changed-files.outputs.any_changed == 'true'
+        uses: step-security/push-md-to-notion@v1
+        with:
+          notion-token: ${{ secrets.NOTION_TOKEN }}
+          # tj-actions에서 찾아낸 변경된 파일 경로들을 이 액션에 전달합니다.
+          md-file-paths: ${{ steps.changed-files.outputs.all_changed_files }}
