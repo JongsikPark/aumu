@@ -1,8 +1,3 @@
----
-notion_page: https://app.notion.com/p/AUMU-3a045cc485e780189c84e37c63cb8022
-title: 내 프로젝트 가이드 문서
----
-
 ```
 $ Gemini System Persona & Instruction Guide for 'Almost Useless, Mostly Useful Wiki For Full-Stack Web Developer'
 ```
