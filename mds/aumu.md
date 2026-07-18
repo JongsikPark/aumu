@@ -44,6 +44,18 @@
 
 - [JPA vs MyBatis](#-jpa-vs-mybatis)
 
+- [필터(Filter) vs 인터셉터(Interceptor)](#-필터filter-vs-인터셉터interceptor)
+
+- [필로드밸런서(Load Balancer)와 이중화(Redundancy)](#-로드밸런서load-balancer와-이중화redundancy)
+
+- [필로드밸방화벽(Firewall) vs 웹방화벽(WAF)](#-방화벽firewall-vs-웹방화벽waf)
+
+- [웹 접근성 (Web Accessibility)](#-웹-접근성-web-accessibility)
+
+- [SEO(Search Engine Optimization) vs GEO(Generative Engine Optimization)](#-seosearch-engine-optimization-vs-geogenerative-engine-optimization)
+
+- [RAG(Retrieval-Augmented Generation) 파이프라인](#-ragretrieval-augmented-generation-파이프라인)
+
 ---
 
 # 📄웹 서버(Web Server) vs WAS(Web Application Server)
@@ -83,6 +95,7 @@
 * **NoSQL (비관계형 데이터베이스)**: 정해진 스키마 없이 JSON(Document), Key-Value, Graph 등 매우 자유롭고 유연한 형태로 데이터를 쌓아 나가며, 대용량 데이터의 수평적 확장(Scale-out)이 용이합니다.
 
 ### 2) 핵심 비교
+
 | 구분 | RDBMS (SQL) | NoSQL (Non-SQL) |
 | :--- | :--- | :--- |
 | **데이터 구조** | 테이블(Table) 형식 (행과 열) | Document(JSON), Key-Value, Column-Family, Graph 등 |
@@ -118,6 +131,7 @@
 * **인가 (Authorization, AuthZ)**: "당신은 이 행동을 할 권한이 있습니까?"를 결정하는 과정으로, 이미 인증된 사용자가 특정 리소스에 접근하거나 특정 기능을 수행할 수 있는 권한을 확인하는 절차입니다.
 
 ### 2) 핵심 비교
+
 | 구분 | 인증 (Authentication) | 인가 (Authorization) |
 | :--- | :--- | :--- |
 | **주요 목적** | 사용자가 주장하는 신원이 진짜인지 검증 | 인증된 사용자가 특정 리소스에 접근할 권한이 있는지 검증 |
@@ -222,6 +236,7 @@
 * **일반 관계형 데이터베이스(RDB)**는 디스크(HDD/SSD)에 데이터를 표 형태로 영구히 저장하는 저장소로, 엄격한 데이터 정합성(ACID)과 복잡한 관계 분석을 제공하지만 디스크 입출력 속도 한계가 존재합니다.
 
 ### 2) 핵심 요약
+
 | 구분 | 레디스 (Redis) | 일반 관계형 데이터베이스 (RDB) |
 | :--- | :--- | :--- |
 | **주요 역할** | 캐시(Cache), 세션 상태 공유, 고속 대기열 처리 및 실시간 카운팅 | 비즈니스 중요 데이터의 영구 저장, 복잡한 트랜잭션 일관성 보장 |
@@ -262,6 +277,7 @@
 * **CD(지속적 제공/배포)**는 통합이 완료된 고품질 코드를 배포 직전 단계까지 항상 자동 준비(Delivery)해두거나, 최종 운영 환경까지 자동으로 직접 릴리스(Deployment)하는 일련의 파이프라인입니다.
 
 ### 2) 핵심 요약
+
 | 구분 | 지속적 통합 (CI - Continuous Integration) | 지속적 제공 및 배포 (CD - Continuous Delivery & Deployment) |
 | :--- | :--- | :--- |
 | **주요 역할** | 코드 변경분 수집, 빌드 유효성 검증, 자동화 테스트 및 코드 정적 분석 | 빌드된 아티팩트를 스테이징 또는 운영 환경에 안정적으로 전달 및 무중단 배포 |
@@ -299,6 +315,7 @@
 * **웹 스토리지(로컬/세션)**는 서버로 자동 전달되지 않는 5MB 이하의 넉넉한 클라이언트 단 저장소로, 만료 없이 영구 보존하는 **로컬 스토리지**와 탭/창 종료 시 파괴되는 **세션 스토리지**로 분류됩니다.
 
 ### 2) 핵심 요약
+
 | 구분 | 브라우저 쿠키 (Cookie) | 로컬 스토리지 (Local Storage) | 세션 스토리지 (Session Storage) |
 | :--- | :--- | :--- | :--- |
 | **주요 역할** | 상태 비보존(Stateless)인 HTTP 환경에서 클라이언트 식별 및 세션 유지 | 브라우저가 종료되어도 지워지지 않아야 하는 클라이언트 편의성 데이터 보관 | 현재 열려 있는 탭/창 내에서만 일시적으로 유지하면 되는 임시 데이터 기록 |
@@ -623,6 +640,190 @@ CSRF는 사용자가 로그인된 상태에서 특정 사이트의 링크를 클
 ### 4) 관련 키워드
 
 `ORM (Object-Relational Mapping)` / `SQL Mapper` / `Persistence Context` / `Hibernate` / `Entity` / `Dynamic SQL` / `Data Source` / `Connection Pool` / `QueryDSL` / `Mapping` / `Type Handler` / `Transaction`
+
+[🔝목차로 이동](#목차)
+
+---
+
+
+# 📄 필터(Filter) vs 인터셉터(Interceptor)
+
+### 1) 10초 요약
+
+* 필터는 **서블릿 컨테이너(웹 서버)**에서 동작하며, 모든 요청의 앞단에서 전역적인 처리를 담당합니다.
+* 인터셉터는 **스프링 컨테이너**에서 동작하며, 컨트롤러로 들어가는 요청의 앞뒤에서 더 세밀한 비즈니스 처리를 담당합니다.
+
+### 2) 핵심 요약
+
+| 구분 | 필터 (Filter) | 인터셉터 (Interceptor) |
+| :--- | :--- | :--- |
+| 영역 (Container) | 서블릿 컨테이너 | 스프링 컨테이너 |
+| 위치 | 디스패처 서블릿(DispatcherServlet) 이전 | 디스패처 서블릿 이후 (컨트롤러 이전) |
+| 제어 범위 | 전체 웹 애플리케이션 | 특정 컨트롤러/메서드 단위 |
+| 주요 활용 | 인코딩, XSS 방어, 로깅, 인증 | 권한 체크, API 호출 로깅, 데이터 가공 |
+| 직관적 비유 | "공항 보안 검색대": 모든 입국자 대상 전수 조사 | "건물 내 출입구 보안": 특정 방 출입 시 사원증 인증 |
+
+### 3) 실무 유즈케이스
+
+* **필터**: 웹 서버의 모든 요청에 대해 공통적으로 적용해야 하는 작업에 적합합니다. 예를 들어, 모든 요청에 대한 '문자 인코딩 설정', '보안 취약점(XSS 등) 방어 코드 적용', '전체 요청에 대한 로깅' 등을 수행할 때 사용합니다. 서블릿 기술의 일부분이므로 스프링 컨테이너 외부에서 동작합니다.
+* **인터셉터**: 스프링의 빈(Bean)을 활용해야 하거나, 특정 URL 패턴(예: `/admin/**`)에만 적용하고 싶을 때 사용합니다. 로그인 여부 확인(권한 체크), 컨트롤러 실행 전후의 파라미터 조작, 컨트롤러 성능 측정 등에 활용합니다. 스프링 MVC의 기능을 온전히 활용할 수 있습니다.
+
+### 4) 관련 키워드
+
+`Servlet Container` / `Spring Container` / `DispatcherServlet` / `AOP` / `HandlerInterceptor` / `Chain of Responsibility` / `FilterChain` / `FilterConfig` / `PreHandle` / `PostHandle` / `AfterCompletion` / `Web Context`
+
+[🔝목차로 이동](#목차)
+
+---
+
+
+# 📄 로드밸런서(Load Balancer)와 이중화(Redundancy)
+
+### 1) 10초 요약
+
+* 로드밸런서는 여러 서버로 **트래픽을 분산**하여 부하를 처리하고 서비스의 응답성을 높이는 기술입니다.
+* 이중화는 서버나 인프라의 **장애를 대비하여 동일한 자원을 복제**해두는 가용성 확보 기술입니다.
+
+### 2) 핵심 요약
+
+| 구분 | 로드밸런서 (Load Balancer) | 이중화 (Redundancy) |
+| :--- | :--- | :--- |
+| 핵심 목적 | 성능 향상 및 부하 분산 (Scalability) | 서비스 연속성 보장 (Availability) |
+| 주요 방식 | Round Robin, Least Connection 등 | Active-Standby, Active-Active 등 |
+| L4 스위치 | IP와 Port 기반의 트래픽 분산 수행 | 로드밸런서 자체도 이중화 구성의 대상 |
+| 직관적 비유 | "마트 계산대 안내원": 고객을 여러 대기줄로 분산 | "비상 발전기": 전원이 나가면 바로 가동되는 보조 장치 |
+
+### 3) 실무 유즈케이스
+
+* **로드밸런서 (L4 스위치)**: 수천 명의 사용자가 동시에 접속하는 서비스에서, L4 스위치는 IP와 포트 정보를 기반으로 여러 대의 웹 서버로 트래픽을 나누어 전달합니다. 이로 인해 특정 서버에 부하가 집중되는 것을 막고 전체 서비스 속도를 유지합니다.
+* **이중화**: 로드밸런서 자체를 두 대(Main/Backup) 설치하여 한 대가 고장 나도 다른 로드밸런서가 즉시 역할을 수행하게 합니다. 또한, 웹 서버를 여러 대 구성하여 한 서버가 다운되더라도 나머지 서버들이 서비스를 계속 운영할 수 있도록(Failover) 합니다.
+
+### 4) 관련 키워드
+
+`L4 Switch` / `L7 Switch` / `Failover` / `High Availability (HA)` / `Active-Active` / `Active-Standby` / `Health Check` / `Session Sticky` / `Scaling` / `Traffic Management` / `DR (Disaster Recovery)` / `Virtual IP (VIP)`
+
+[🔝목차로 이동](#목차)
+
+---
+
+
+# 📄 방화벽(Firewall) vs 웹방화벽(WAF)
+
+### 1) 10초 요약
+
+* 일반 방화벽은 네트워크 계층에서 IP와 포트 정보를 기반으로 접근을 **차단**하는 보안 장비입니다.
+* 웹방화벽(WAF)은 웹 애플리케이션 계층에서 HTTP 요청을 분석하여 SQL 인젝션, XSS 같은 **웹 공격을 방어**하는 장비입니다.
+
+### 2) 핵심 요약
+
+| 구분 | 방화벽 (Firewall) | 웹방화벽 (WAF - Web Application Firewall) |
+| :--- | :--- | :--- |
+| 동작 계층 | 네트워크/전송 계층 (L3/L4) | 애플리케이션 계층 (L7) |
+| 방어 대상 | 비인가된 네트워크 접근 | 웹 공격 (SQLi, XSS, CSRF 등) |
+| 주요 판단 | IP 주소, 포트 번호, 프로토콜 | HTTP 요청 본문, 쿠키, 파라미터 값 |
+| 직관적 비유 | "건물 정문 경비원": 신분증(IP) 확인 후 입장 허용 | "건물 내 안내 데스크": 방문 목적이 불순(공격)한지 대화로 분석 |
+
+### 3) 실무 유즈케이스
+
+* **방화벽**: 서버의 특정 포트(예: 80, 443)만 외부에서 접근 가능하도록 제한하고, 악의적인 IP 대역에서의 접근을 원천 차단할 때 사용합니다. 보안의 가장 기초가 되는 펜스 역할을 합니다.
+* **웹방화벽(WAF)**: 웹 서버로 들어오는 HTTP 요청을 면밀히 검사합니다. 예를 들어, 사용자가 입력창에 SQL 명령어(`SELECT * FROM...`)를 넣거나 스크립트를 삽입(` <script>...`)하면 이를 웹 공격으로 인지하여 차단합니다. 일반 방화벽은 이러한 정상적인 포트(80/443)로 들어오는 공격을 감지하지 못하므로 WAF가 필수적입니다.
+
+### 4) 관련 키워드
+
+`Packet Filtering` / `Stateful Inspection` / `L7 Inspection` / `HTTP/HTTPS` / `SQL Injection` / `XSS` / `CSRF` / `Payload Analysis` / `DDoS Protection` / `Security Rule/Policy` / `False Positive`
+
+[🔝목차로 이동](#목차)
+
+---
+
+
+# 📄 웹 접근성 (Web Accessibility)
+
+### 1) 10초 요약
+
+* 웹 접근성은 장애인, 고령자를 포함한 **모든 사용자가 웹 서비스를 동등하게 이용**할 수 있도록 보장하는 것을 의미합니다.
+* 단순히 '누구나'가 아니라, 다양한 **보조 기기(스크린 리더 등)와 환경을 고려**하여 설계하는 것입니다.
+
+### 2) 핵심 요약
+
+| 구분 | 주요 내용 | 실무적 적용 방향 |
+| :--- | :--- | :--- |
+| 인식의 용이성 | 정보는 사용자가 인식할 수 있어야 함 | 대체 텍스트 제공, 자막 제공 |
+| 운용의 용이성 | 인터페이스는 사용하기 쉬워야 함 | 키보드만으로 모든 기능 조작 가능 |
+| 이해의 용이성 | 정보는 이해하기 쉬워야 함 | 예측 가능한 내비게이션, 오류 정정 지원 |
+| 견고성 | 미래의 기술에도 유지되어야 함 | 표준 HTML 태그 준수 |
+| 직관적 비유 | "모두를 위한 경사로": 휠체어뿐만 아니라 유모차, 캐리어 이용자도 편리 | |
+
+### 3) 실무 유즈케이스
+
+* **대체 텍스트(alt)**: 시각 장애인이 스크린 리더기를 사용할 때, 이미지에 `alt="로그인 버튼"`과 같은 정보를 제공하지 않으면 화면에 무엇이 있는지 알 수 없습니다. 모든 이미지에는 적절한 대체 텍스트를 반드시 넣어야 합니다.
+* **키보드 접근성**: 마우스 사용이 어려운 사용자는 키보드의 `Tab` 키로만 서비스를 이용합니다. 모든 메뉴, 입력창, 버튼에 `Tab` 순서가 논리적으로 배치되어야 하며, 현재 어디에 포커스(Focus)가 있는지 시각적으로 명확하게 표시(Focus Indicator)해야 합니다.
+* **명도 대비**: 색약이나 저시력 사용자를 위해 배경색과 글자색의 대비를 충분히 확보하여 글자를 읽기 쉽게 해야 합니다.
+
+### 4) 관련 키워드
+
+`WCAG (Web Content Accessibility Guidelines)` / `Screen Reader` / `Alt Text` / `Keyboard Navigation` / `Focus Order` / `Semantic HTML` / `ARIA (Accessible Rich Internet Applications)` / `Color Contrast` / `Responsive Design`
+
+[🔝목차로 이동](#목차)
+
+---
+
+
+# 📄 SEO(Search Engine Optimization) vs GEO(Generative Engine Optimization)
+
+### 1) 10초 요약
+
+* SEO는 검색 엔진의 **순위 결과(List)**에 웹 사이트를 상단에 노출시키기 위한 최적화 기법입니다.
+* GEO는 생성형 AI가 **질문에 대한 답(Answer)**을 생성할 때, 우리 사이트의 정보를 **인용(Citation)**하도록 유도하는 최적화 기법입니다.
+
+### 2) 핵심 요약
+
+| 구분 | SEO (Search Engine Optimization) | GEO (Generative Engine Optimization) |
+| :--- | :--- | :--- |
+| 목표 | 검색 순위(Ranking) 1위 달성 | AI 모델의 답변에 출처(Citation)로 채택 |
+| 주요 방식 | 키워드 중심, 백링크 확보, 기술적 SEO | 신뢰도(Trust), 전문성(Authority), 간결성 |
+| 타겟 환경 | 전통적 검색 엔진 (Google, Bing 등) | 생성형 AI, LLM (ChatGPT, Perplexity 등) |
+| 직관적 비유 | "도서관 검색 순위 높이기": 검색 결과 리스트에 올라가기 | "질문 답변사의 신뢰받는 정보원": AI에게 정보의 소스로 선택받기 |
+
+### 3) 실무 유즈케이스
+
+* **SEO**: 사용자가 "자바스크립트 프레임워크 추천"을 검색했을 때, 우리 블로그 글이 검색 결과 1페이지에 나오도록 메타 태그를 최적화하고 백링크를 확보합니다. 클릭을 유도하여 트래픽을 얻는 것이 최종 목적입니다.
+* **GEO**: 사용자가 AI에게 "자바스크립트 프레임워크 장단점을 알려줘"라고 질문했을 때, AI가 우리 웹사이트의 내용을 분석하여 "A는 이런 장점이 있습니다(출처: 우리 사이트)"와 같이 인용하여 답변하게 만듭니다. 이를 위해 사이트의 정보가 명확하고, 구조화되어 있으며, 신뢰할 수 있는 전문적인 내용이어야 합니다.
+
+### 4) 관련 키워드
+
+`LLM (Large Language Model)` / `RAG (Retrieval-Augmented Generation)` / `Citation` / `Authority` / `Trustworthiness` / `Structured Data` / `Contextual Relevance` / `Direct Answer` / `Conversational AI`
+
+[🔝목차로 이동](#목차)
+
+---
+
+
+# 📄 RAG(Retrieval-Augmented Generation) 파이프라인
+
+### 1) 10초 요약
+
+* RAG는 LLM이 학습하지 않은 최신 데이터나 내부 정보를 활용할 수 있도록 **외부 지식 기반에서 관련 정보를 검색(Retrieval)**하여 답변을 생성(Generation)하는 기술입니다.
+* LLM의 환각(Hallucination) 현상을 줄이고 정보의 정확성을 높이는 데 핵심적인 역할을 합니다.
+
+### 2) 핵심 요약
+
+| 구분 | 주요 역할 | 상세 설명 |
+| :--- | :--- | :--- |
+| **Retrieval (검색)** | 외부 지식 확보 | 사용자 질문과 관련된 문서를 벡터 데이터베이스에서 검색 |
+| **Augmented (증강)** | 질문 보강 | 검색된 관련 문서를 프롬프트에 포함하여 LLM에게 전달 |
+| **Generation (생성)** | 답변 생성 | LLM이 제공된 지식을 바탕으로 최종 답변을 생성 |
+| 직관적 비유 | "오픈북 테스트": 시험 문제(질문)를 풀 때, 참고 서적(지식베이스)에서 답을 찾아보고 답안(답변)을 작성 | |
+
+### 3) 파이프라인 흐름
+
+1.  **데이터 인덱싱 (Ingestion)**: 외부 문서(PDF, DB, 웹 등)를 잘게 쪼개고(Chunking), 임베딩 모델(Embedding Model)을 통해 벡터(Vector) 형태로 변환하여 벡터 DB에 저장합니다.
+2.  **검색 (Retrieval)**: 사용자가 질문을 하면, 이 질문을 같은 임베딩 모델로 벡터화하여 벡터 DB에서 가장 유사한 문서를 찾습니다.
+3.  **답변 생성 (Generation)**: LLM에게 "다음 지식을 참고하여 질문에 답변해줘: [지식]" 형태의 프롬프트를 전달하고, LLM은 이를 기반으로 답변을 생성합니다.
+
+### 4) 관련 키워드
+
+`Embedding Model` / `Vector Database` / `Chunking` / `Similarity Search` / `LLM` / `Prompt Engineering` / `Hallucination` / `Knowledge Base` / `LangChain` / `Semantic Search`
 
 [🔝목차로 이동](#목차)
 
