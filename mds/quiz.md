@@ -27,3 +27,14 @@
 * ❓ **[Quiz 1 풀기 - 새 창 열기 권장(Ctrl + Click)](https://notebooklm.google.com/notebook/ae5753fe-a1b4-477d-908b-f6565267881f/artifact/00d3d54b-55c4-462f-9efe-787eebb36c78?utm_source=nlm_web_share&utm_medium=google_oo&utm_campaign=art_share_1&utm_content=&utm_smc=nlm_web_share_google_oo_art_share_1_)**
 
 ---
+
+## 📅 Quiz 2 (2026.07.18. Generated)
+
+### 🎯 시험 범위 (핵심 키워드)
+
+> `Web Server vs WAS` / `RDBMS vs NoSQL` / `Authentication vs Authorization` / `JWT vs Session` / `CSR vs SSR` / `Browser Storage (Cookie/Local/Session)` / `Database Query Tuning` / `Zero-Downtime Deployment Strategies` / `Web Security (XSS/CSRF)` / `Spring Boot Core Philosophy` / `Database Connection Pool` / `MQTT Protocol` / 
+### 📝 퀴즈 풀어 보기
+
+* ❓ **[Quiz 2 풀기 - 새 창 열기 권장(Ctrl + Click)](https://notebooklm.google.com/notebook/ae5753fe-a1b4-477d-908b-f6565267881f/artifact/b4093115-a357-4096-8e38-e4d841cc0031?utm_source=nlm_web_share&utm_medium=google_oo&utm_campaign=art_share_1&utm_content=&utm_smc=nlm_web_share_google_oo_art_share_1_)**
+
+---
