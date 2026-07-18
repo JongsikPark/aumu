@@ -32,6 +32,18 @@
 
 - [무중단 배포(Zero-Downtime Deployment)](#-무중단-배포zero-downtime-deployment)
 
+- [ACID vs BASE 모델 비교](#-acid-vs-base-모델-비교)
+
+- [XSS와 CSRF 취약성](#-xss와-csrf-취약성)
+
+- [동기(Synchronous) vs 비동기(Asynchronous)](#-동기synchronous-vs-비동기asynchronous)
+
+- [서블릿(Servlet) vs 스프링(Spring) vs 스프링 부트(Spring Boot)](#-서블릿servlet-vs-스프링spring-vs-스프링-부트spring-boot)
+
+- [SQL 인젝션(SQL Injection) 공격과 방어법](#-sql-인젝션sql-injection-공격과-방어법)
+
+- [JPA vs MyBatis](#-jpa-vs-mybatis)
+
 ---
 
 # 📄웹 서버(Web Server) vs WAS(Web Application Server)
@@ -422,6 +434,195 @@
 
 ### 4) 관련 키워드
 `Rolling Update` / `Blue-Green Deployment` / `Canary Deployment` / `Readiness Probe` / `Liveness Probe` / `Health Check` / `Load Balancer` / `Nginx proxy_pass` / `Downtime` / `Graceful Shutdown` / `Session Clustering` / `Sticky Session` / `Service Mesh` / `Istio` / `CI/CD Pipeline` / `Backward Compatibility` / `Database Schema Migration` / `Route53 Weighted Routing`
+
+[🔝목차로 이동](#목차)
+
+---
+
+
+# 📄 ACID vs BASE 모델 비교
+
+### 1) 10초 요약
+
+* ACID는 데이터 무결성과 일관성을 최우선으로 하는 전통적인 트랜잭션 모델입니다.
+* BASE는 분산 시스템에서 가용성과 확장성을 위해 일관성을 잠시 양보하는 유연한 모델입니다.
+
+### 2) 핵심 요약
+
+| 구분 | ACID | BASE |
+| :--- | :--- | :--- |
+| 지향점 | 데이터 무결성 및 강력한 일관성 | 가용성 및 확장성 |
+| 데이터 일관성 | 즉각적 일관성 (Strong Consistency) | 최종적 일관성 (Eventual Consistency) |
+| 주요 활용 | RDBMS (관계형 데이터베이스) | NoSQL (비관계형 데이터베이스) |
+| 직관적 비유 | 은행 금고: 돈을 보내면 즉시 정확히 반영되어야 함 | 소셜 네트워크 댓글: 내 댓글이 1초 뒤에 친구에게 보여도 큰 문제 없음 |
+
+### 3) 실무 유즈케이스
+
+ACID 모델은 데이터의 정확성이 생명인 금융 거래 시스템(송금, 결제 처리)이나 주문 시스템에서 필수적으로 사용됩니다. 트랜잭션이 성공하면 반드시 데이터가 반영되고, 실패하면 원상복구되어야 하기 때문입니다.
+
+반면, BASE 모델은 대규모 트래픽을 처리해야 하는 소셜 네트워크 서비스(좋아요 수 계산, 게시글 피드), 실시간 로그 분석, 검색 시스템 등에서 주로 채택합니다. 모든 노드가 항상 동일한 데이터를 가질 필요가 없으며, 약간의 지연이 발생하더라도 높은 가용성을 유지하여 사용자 경험을 끊김 없이 제공하는 것이 중요하기 때문입니다.
+
+### 4) 관련 키워드
+
+`CAP 이론` / `Consistency` / `Availability` / `Partition Tolerance` / `Eventual Consistency` / `RDBMS` / `NoSQL` / `Transactional` / `Concurrency Control` / `Isolation Level` / `Sharding` / `Replica` / `Distributed System`
+
+[🔝목차로 이동](#목차)
+
+---
+
+
+# 📄 XSS와 CSRF 취약성
+
+### 1) 10초 요약
+
+* XSS는 공격자가 피해자의 브라우저에서 **악성 스크립트를 실행**하여 데이터를 탈취하는 공격입니다.
+* CSRF는 공격자가 피해자가 **인증된 상태를 악용하여 원치 않는 요청**을 보내게 만드는 공격입니다.
+
+### 2) 핵심 요약
+
+| 구분 | XSS (Cross-Site Scripting) | CSRF (Cross-Site Request Forgery) |
+| :--- | :--- | :--- |
+| 공격 대상 | 피해자의 브라우저 (사용자) | 서버 (웹 애플리케이션) |
+| 핵심 목표 | 세션 토큰, 쿠키 탈취, 데이터 가로채기 | 사용자의 권한으로 원치 않는 작업 수행 |
+| 공격 방식 | 악성 스크립트를 삽입하여 실행 | 인증된 사용자의 요청을 위조하여 전송 |
+| 직관적 비유 | 내 집(브라우저)에 몰래 도청기(스크립트) 설치 | 내 대신 누군가 내 도장(쿠키)을 찍어 서류를 제출 |
+
+### 3) 실무 유즈케이스
+
+XSS는 주로 게시판의 댓글이나 사용자 프로필 등 사용자의 입력값이 제대로 검증되지 않고 화면에 출력되는 곳에서 발생합니다. 공격자는 이를 통해 사용자의 세션 쿠키를 훔치거나, 가짜 로그인 페이지로 리다이렉트시켜 정보를 탈취합니다.
+
+CSRF는 사용자가 로그인된 상태에서 특정 사이트의 링크를 클릭하도록 유도하여 발생합니다. 예를 들어, 사용자가 은행 사이트에 로그인되어 있을 때 공격자가 심어둔 링크를 누르면, 의도치 않게 내 계좌에서 공격자의 계좌로 송금이 실행되도록 하는 것이 대표적입니다.
+
+### 4) 관련 키워드
+
+`Same-Origin Policy (SOP)` / `Content Security Policy (CSP)` / `Cookie` / `Session` / `HttpOnly` / `SameSite Attribute` / `CSRF Token` / `Input Validation` / `Output Encoding` / `DOM Manipulation` / `Authentication` / `Authorization` / `Webhook` / `Phishing`
+
+[🔝목차로 이동](#목차)
+
+---
+
+
+# 📄 동기(Synchronous) vs 비동기(Asynchronous)
+
+### 1) 10초 요약
+
+* 동기는 작업이 끝날 때까지 다음 작업을 진행하지 않고 **순차적으로 대기**하며 처리하는 방식입니다.
+* 비동기는 작업의 완료를 기다리지 않고 **다음 작업을 바로 진행**하며, 작업이 끝나면 알림(콜백 등)을 받는 방식입니다.
+
+### 2) 핵심 요약
+
+| 구분 | 동기 (Synchronous) | 비동기 (Asynchronous) |
+| :--- | :--- | :--- |
+| 처리 방식 | 직렬 처리 (순차적) | 병렬 처리 (비순차적) |
+| 장점 | 설계가 단순하고 흐름 이해가 쉬움 | 효율적인 자원 사용, 높은 응답성 |
+| 단점 | 블로킹으로 인한 작업 지연 발생 | 흐름 파악이 복잡하고 디버깅이 어려움 |
+| 직관적 비유 | 줄을 서서 차례를 기다리는 은행 창구 | 주문 후 진동벨을 받고 다른 일을 하는 카페 |
+
+### 3) 실무 유즈케이스
+
+동기 방식은 작업 간의 순서가 명확하고 데이터 일관성이 중요한 계산 로직이나 간단한 CLI 도구에서 주로 사용합니다. 코드가 순서대로 실행되므로 흐름을 파악하기 쉽고 예외 처리가 직관적입니다.
+
+비동기 방식은 입출력(I/O) 작업이 많은 현대 웹 애플리케이션에서 필수입니다. 예를 들어, 서버에서 API로 외부 데이터를 가져오거나 파일 시스템에 접근할 때, 이 작업이 끝날 때까지 서버가 멈춰있지 않도록 비동기로 처리합니다. 이를 통해 동시에 수많은 사용자의 요청을 빠르게 처리할 수 있습니다.
+
+### 4) 관련 키워드
+
+`Blocking` / `Non-blocking` / `Thread` / `Event Loop` / `Callback` / `Promise` / `async/await` / `Concurrency` / `Parallelism` / `I/O Bound` / `CPU Bound` / `Context Switching` / `Race Condition` / `Deadlock`
+
+[🔝목차로 이동](#목차)
+
+---
+
+
+# 📄 서블릿(Servlet) vs 스프링(Spring) vs 스프링 부트(Spring Boot)
+
+### 1) 10초 요약
+
+* 서블릿은 자바 웹의 근간을 이루는 가장 낮은 수준의 **기술 표준**입니다.
+* 스프링은 서블릿 기반의 복잡함을 해결하고자 나온 **IoC/DI 중심의 엔터프라이즈 프레임워크**입니다.
+* 스프링 부트는 스프링 설정의 복잡함을 극복하고 **빠르게 개발**할 수 있도록 돕는 **실행 환경**입니다.
+
+### 2) 핵심 요약
+
+| 구분 | 서블릿 (Servlet) | 스프링 (Spring Framework) | 스프링 부트 (Spring Boot) |
+| :--- | :--- | :--- | :--- |
+| 특징 | 자바 웹의 기본, 저수준 API | IoC/DI, AOP 제공 | 자동 설정, 내장 서버, 간편한 시작 |
+| 지향점 | 웹 요청/응답 제어 | 엔터프라이즈 수준의 확장성 | 개발 생산성 극대화 (Convention) |
+| 발전 배경 | 웹 동적 처리를 위한 자바 표준 | EJB의 복잡성 극복 | 스프링 설정의 'XML 지옥' 탈출 |
+| 직관적 비유 | 자동차 엔진/부품 직접 조립 | 자동차 뼈대에 기능 골라 장착 | 바로 타는 완성차 (시동만 걸면 됨) |
+
+### 3) 실무 유즈케이스
+
+* **서블릿**: 현대에는 서블릿을 직접 사용하는 경우는 드뭅니다. 하지만 스프링 MVC와 같은 프레임워크들이 내부적으로 서블릿 기술을 핵심 엔진으로 사용하므로, 동작 원리를 이해하는 것은 매우 중요합니다.
+* **스프링**: 매우 복잡한 엔터프라이즈 시스템이나, 서드파티 라이브러리와의 복잡한 연동이 필요하여 세밀한 커스터마이징이 필수적인 환경에서 사용합니다.
+* **스프링 부트**: 거의 모든 최신 자바 웹 애플리케이션 개발의 표준입니다. 설정보다 관습(Convention over Configuration)을 중시하며, 마이크로서비스 아키텍처(MSA)를 빠르게 구축할 때 압도적으로 유리합니다.
+
+### 4) 관련 키워드
+
+`Jakarta EE` / `Servlet Container` / `EJB (Enterprise JavaBeans)` / `IoC (Inversion of Control)` / `DI (Dependency Injection)` / `AOP (Aspect Oriented Programming)` / `XML Configuration` / `Annotation-based Configuration` / `Auto-configuration` / `Embedded Tomcat` / `Starter dependency` / `Convention over Configuration`
+
+[🔝목차로 이동](#목차)
+
+---
+
+
+# 📄 SQL 인젝션(SQL Injection) 공격과 방어법
+
+### 1) 10초 요약
+
+* SQL 인젝션은 공격자가 입력 필드를 통해 **악의적인 SQL 쿼리를 주입**하여 데이터베이스를 조작하는 공격입니다.
+* 방어의 핵심은 사용자 입력을 **쿼리 구조에서 분리**하거나(Prepared Statement), 입력을 **엄격하게 검증/치환**하는 것입니다.
+
+### 2) 핵심 요약
+
+| 구분 | SQL 인젝션 (공격 원리) | 방어 기법 (핵심 대응) |
+| :--- | :--- | :--- |
+| 공격 방식 | SQL 쿼리 문법을 변조 | Prepared Statement(Parameter Binding) 사용 |
+| 취약 지점 | 사용자 입력값 검증이 없는 쿼리 | 입력값 검증, 파라미터화 쿼리 |
+| 위험성 | 데이터 탈취, 수정, 삭제, 인증 우회 | 보안 강도 극대화 |
+| 직관적 비유 | "이름이 뭐니?"에 "이름' OR '1'='1"이라고 답해 모든 정보를 열람 | 질문자(서버)가 미리 정해진 양식에만 정보를 입력받음 |
+
+### 3) 실무 유즈케이스
+
+* **공격 시나리오**: 로그인 페이지의 ID 입력창에 `admin' --` 같은 값을 입력하여 비밀번호 없이 관리자 계정으로 로그인을 시도하거나, 게시판 검색창에 데이터를 삭제하는 쿼리를 삽입할 수 있습니다.
+* **방어 전략**: 
+    1. **Prepared Statement 필수 사용**: 가장 강력한 방어법입니다. 쿼리 구조와 데이터를 분리하여 사용자가 입력한 값이 쿼리 명령어로 실행되지 않게 합니다. (ORM/JPA 사용 시 자동 적용됨)
+    2. **입력값 검증(Validation)**: 허용된 데이터 형식(숫자만, 날짜만 등)이 아니면 즉시 차단합니다.
+    3. **데이터베이스 권한 최소화**: 웹 애플리케이션 계정이 DB 전체를 삭제할 수 없도록 권한을 제한합니다.
+
+### 4) 관련 키워드
+
+`Prepared Statement` / `Parameter Binding` / `ORM (Object-Relational Mapping)` / `JPA/Hibernate` / `Input Validation` / `Escaping` / `Stored Procedure` / `Least Privilege Principle` / `Authentication Bypass` / `Blind SQL Injection`
+
+[🔝목차로 이동](#목차)
+
+---
+
+
+# 📄 JPA vs MyBatis
+
+### 1) 10초 요약
+
+* JPA는 객체와 관계형 DB를 매핑하여 SQL을 자동 생성하는 **ORM 프레임워크**입니다.
+* MyBatis는 SQL을 직접 작성하고 매핑하여 실행하는 **SQL 매퍼 프레임워크**입니다.
+
+### 2) 핵심 요약
+
+| 구분 | JPA (Java Persistence API) | MyBatis |
+| :--- | :--- | :--- |
+| 분류 | ORM (Object-Relational Mapping) | SQL Mapper |
+| SQL 작성 | 자동 생성 (프레임워크가 작성) | 수동 작성 (개발자가 작성) |
+| 개발 생산성 | 높은 학습 곡선, 유지보수 유리 | 낮은 학습 곡선, SQL 제어 용이 |
+| 추상화 수준 | 높음 (데이터베이스 변경 용이) | 낮음 (데이터베이스 의존성 존재) |
+| 직관적 비유 | "자동 번역기": 문장만 던지면 DB 언어로 자동 변환 | "수동 번역가": 직접 가장 최적화된 문장으로 번역 |
+
+### 3) 실무 유즈케이스
+
+* **JPA**: 객체 지향적인 설계를 중시하며, 복잡한 비즈니스 로직을 다루는 시스템에서 사용합니다. 데이터베이스 스키마가 변해도 객체 모델을 유지하기 쉽고, 쿼리 작성 시간을 줄여 생산성을 높입니다. (최근 자바 진영의 표준)
+* **MyBatis**: 복잡한 통계 쿼리나 성능 최적화를 위해 매우 정교한 SQL 튜닝이 필요한 경우 사용합니다. 기존의 SQL에 익숙한 개발자가 많거나, 데이터베이스 의존적인 기능을 적극적으로 활용해야 하는 경우에 유리합니다.
+
+### 4) 관련 키워드
+
+`ORM (Object-Relational Mapping)` / `SQL Mapper` / `Persistence Context` / `Hibernate` / `Entity` / `Dynamic SQL` / `Data Source` / `Connection Pool` / `QueryDSL` / `Mapping` / `Type Handler` / `Transaction`
 
 [🔝목차로 이동](#목차)
 
