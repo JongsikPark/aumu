@@ -46,15 +46,25 @@
 
 - [필터(Filter) vs 인터셉터(Interceptor)](#-필터filter-vs-인터셉터interceptor)
 
-- [필로드밸런서(Load Balancer)와 이중화(Redundancy)](#-로드밸런서load-balancer와-이중화redundancy)
+- [로드밸런서(Load Balancer)와 이중화(Redundancy)](#-로드밸런서load-balancer와-이중화redundancy)
 
-- [필로드밸방화벽(Firewall) vs 웹방화벽(WAF)](#-방화벽firewall-vs-웹방화벽waf)
+- [방화벽(Firewall) vs 웹방화벽(WAF)](#-방화벽firewall-vs-웹방화벽waf)
 
 - [웹 접근성 (Web Accessibility)](#-웹-접근성-web-accessibility)
 
 - [SEO(Search Engine Optimization) vs GEO(Generative Engine Optimization)](#-seosearch-engine-optimization-vs-geogenerative-engine-optimization)
 
 - [RAG(Retrieval-Augmented Generation) 파이프라인](#-ragretrieval-augmented-generation-파이프라인)
+
+- [커넥션 풀(Connection Pool) 개념 및 최적화 가이드](#-커넥션-풀connection-pool-개념-및-최적화-가이드)
+
+- [RESTful API (Representational State Transfer)](#-restful-api-representational-state-transfer)
+
+- [INNER JOIN vs OUTER JOIN](#-inner-join-vs-outer-join)
+
+- [DELETE vs TRUNCATE](#-delete-vs-truncate)
+
+- [리눅스 사용자(User)와 그룹(Group)](#-리눅스-사용자user와-그룹group)
 
 ---
 
@@ -824,6 +834,178 @@ CSRF는 사용자가 로그인된 상태에서 특정 사이트의 링크를 클
 ### 4) 관련 키워드
 
 `Embedding Model` / `Vector Database` / `Chunking` / `Similarity Search` / `LLM` / `Prompt Engineering` / `Hallucination` / `Knowledge Base` / `LangChain` / `Semantic Search`
+
+[🔝목차로 이동](#목차)
+
+---
+
+
+# 📄 커넥션 풀(Connection Pool) 개념 및 최적화 가이드
+
+### 1) 10초 요약
+
+* 커넥션 풀은 DB 연결을 매번 새로 맺는 비용을 줄이기 위해 미리 여러 연결을 생성해두고 재사용하는 기술입니다.
+* 최적화는 서비스의 트래픽 규모와 DB 성능에 맞춰 적절한 풀 사이즈와 타임아웃을 설정하는 것이 핵심입니다.
+
+### 2) 핵심 요약
+
+| 구분 | 개념 및 설명 |
+| :--- | :--- |
+| 핵심 목적 | DB 연결/해제 오버헤드 감소 및 성능 향상 |
+| 동작 방식 | 연결을 생성하여 '풀(Pool)'에 담아두고, 필요할 때 빌려주고 반납받음 |
+| 필요 이유 | 매번 TCP Handshake를 수행하는 것은 시간과 자원 낭비가 심함 |
+| 최적화 핵심 | 적절한 Pool Size(최대 연결 수)와 유휴(Idle) 시간 설정 |
+| 직관적 비유 | "은행 창구의 직원들": 손님(요청) 올 때마다 새로 채용하는 대신, 미리 대기시키고 돌려쓰기 |
+
+### 3) 실무 유즈케이스 및 최적화 가이드
+
+커넥션 풀은 웹 애플리케이션의 성능을 좌우하는 매우 중요한 설정입니다. 무작정 크게 잡는 것이 능사가 아니며, 다음과 같은 가이드를 따르는 것이 좋습니다.
+
+* **최적화 가이드**
+    1. **적절한 Pool Size 설정**: `Max Pool Size`를 너무 크게 설정하면 DB 서버의 CPU와 메모리 부하가 증가하고, 너무 작으면 대기 시간이 길어집니다. 보통 `(CPU 코어 수 * 2) + 디스크 스핀들 수` 공식에서 시작해 실제 부하 테스트를 통해 조정합니다.
+    2. **Min Idle 설정**: 최소 유지 연결 수를 적절히 설정하여 갑작스러운 트래픽 폭주에 대비하되, 불필요한 유휴 연결이 자원을 점유하지 않도록 주의합니다.
+    3. **Timeout 설정**: 연결을 얻지 못하고 대기하는 시간(`Connection Timeout`)을 설정하여, 장애 시 애플리케이션이 무한정 대기하는 것을 막아야 합니다.
+    4. **Leak 탐지**: 커넥션을 빌려 간 후 반납하지 않는 현상(Leak)을 방지하기 위해 사용 시간을 모니터링하고 로그를 남기는 설정을 활성화해야 합니다.
+
+* **현업 활용**: 대부분의 스프링 부트 환경에서는 `HikariCP`가 기본 커넥션 풀로 채택되어 있습니다. 매우 빠르고 안정적이므로 특별한 이유가 없다면 이를 그대로 사용하고 설정값만 잘 조정하는 것을 권장합니다.
+
+### 4) 관련 키워드
+
+`HikariCP` / `TCP Handshake` / `Overhead` / `Latency` / `Throughput` / `Pool Size` / `Idle Connection` / `Connection Leak` / `DB Connection` / `Wait Timeout` / `Load Testing`
+
+[🔝목차로 이동](#목차)
+
+---
+
+
+# 📄 RESTful API (Representational State Transfer)
+
+### 1) 10초 요약
+
+* RESTful API는 자원(Resource)을 이름으로 구분하고, HTTP 메서드를 통해 해당 자원에 대한 행위를 정의하는 통신 규칙입니다.
+* 서버와 클라이언트 간의 결합도를 낮추고 시스템의 확장성을 극대화하기 위해 설계된 표준 아키텍처 스타일입니다.
+
+### 2) 핵심 요약
+
+| 구분 | 상세 내용 |
+| :--- | :--- |
+| 설계 원칙 | 자원 기반(URI), 무상태성(Stateless), 캐시 가능, 균일 인터페이스, 계층화 |
+| 주요 HTTP 메서드 | GET(조회), POST(생성), PUT(전체 수정), PATCH(부분 수정), DELETE(삭제) |
+| 상태 관리 | 서버는 클라이언트의 상태를 유지하지 않음 (Stateless) |
+| 데이터 표현 | JSON, XML 등 자원 중심의 상태 표현 |
+| 직관적 비유 | "메뉴판에 기반한 요리 주문": 메뉴(자원) 이름으로 행위(주문)를 결정 |
+
+### 3) 실무 유즈케이스
+
+* **URI 설계**: `/users/{id}`와 같이 자원을 명사로 표현합니다. 절대 `/getUser?id=1` 처럼 동사를 사용하지 않습니다.
+* **HTTP 메서드 활용**: 
+    * `GET /users/1` -> 1번 유저 조회
+    * `POST /users` -> 새 유저 생성
+    * `PATCH /users/1` -> 1번 유저 정보 수정
+    * `DELETE /users/1` -> 1번 유저 삭제
+* **Stateless(무상태성)**: 서버는 클라이언트의 이전 요청이나 세션 상태를 저장하지 않습니다. 모든 요청은 그 자체로 처리에 필요한 모든 정보를 포함해야 하며, 이는 대규모 분산 시스템에서 서버를 확장하기 매우 유리하게 만듭니다.
+
+### 4) 관련 키워드
+
+`REST` / `HTTP Method` / `Resource` / `Stateless` / `Uniform Interface` / `JSON` / `URI` / `API` / `Endpoint` / `CRUD` / `Self-descriptive` / `HATEOAS`
+
+[🔝목차로 이동](#목차)
+
+---
+
+
+# 📄 INNER JOIN vs OUTER JOIN
+
+### 1) 10초 요약
+
+* INNER JOIN은 두 테이블에서 **조인 조건이 일치하는 데이터만** 결합합니다.
+* OUTER JOIN은 조건이 일치하지 않아도 **한쪽 혹은 양쪽 테이블의 데이터를 모두 포함**하여 결합합니다.
+
+### 2) 핵심 요약
+
+| 구분 | INNER JOIN | OUTER JOIN (LEFT/RIGHT/FULL) |
+| :--- | :--- | :--- |
+| 데이터 결합 방식 | 교집합 (공통된 데이터만) | 합집합 (불일치 데이터도 포함) |
+| 결합 조건 미일치 시 | 결과에서 제외됨 | NULL 값을 채워 결과에 포함시킴 |
+| 주요 활용 | 필수 연관 관계 데이터 조회 | 특정 데이터 존재 여부 확인 및 리포트 |
+| 직관적 비유 | "동창회": 서로 아는 사람들만 모임 | "전체 행사": 아는 사람 + 모르는 사람도 모두 초대 |
+
+### 3) 실무 유즈케이스
+
+* **INNER JOIN**: "주문한 유저" 정보만 가져올 때 사용합니다. 유저와 주문 테이블을 조인하여 주문 내역이 존재하는 유저만 결과로 나옵니다. 주문하지 않은 유저는 결과에서 배제됩니다.
+* **OUTER JOIN**: "주문 여부와 상관없이 모든 유저 목록"을 가져올 때 사용합니다(LEFT JOIN 예시). 유저 테이블을 왼쪽에 두고 주문 테이블과 조인하면, 주문 내역이 없는 유저도 결과에 표시되며 주문 정보는 `NULL`로 나타납니다. 이를 통해 '주문하지 않은 유저'를 쉽게 식별할 수 있습니다.
+
+### 4) 관련 키워드
+
+`JOIN` / `INNER JOIN` / `LEFT OUTER JOIN` / `RIGHT OUTER JOIN` / `FULL OUTER JOIN` / `NULL` / `ON` / `Foreign Key` / `Primary Key` / `Relational Database` / `Cartesian Product`
+
+[🔝목차로 이동](#목차)
+
+---
+
+
+# 📄 DELETE vs TRUNCATE
+
+### 1) 10초 요약
+
+* DELETE는 **데이터를 행 단위로 삭제**하며, 삭제 내용을 로그에 기록하여 롤백(복구)이 가능합니다.
+* TRUNCATE는 **테이블 자체를 초기화(DML이 아닌 DDL)**하며, 로그 없이 빠르게 삭제하지만 롤백이 어렵습니다.
+
+### 2) 핵심 요약
+
+| 구분 | DELETE | TRUNCATE |
+| :--- | :--- | :--- |
+| 명령어 분류 | DML (데이터 조작어) | DDL (데이터 정의어) |
+| 삭제 단위 | 행 단위 (Row-by-row) | 테이블 전체 (Entire Table) |
+| 롤백(복구) | 가능 (트랜잭션 로그 사용) | 불가능 (일부 DB 제외) |
+| 성능 | 상대적으로 느림 | 매우 빠름 |
+| 저장 공간 반환 | 즉시 반환되지 않음 (테이블/인덱스 유지) | 즉시 반환 (초기 상태로 복구) |
+| 직관적 비유 | "지우개로 글씨 지우기": 한 줄씩 지우고 흔적(로그) 남음 | "종이 교체하기": 헌 종이를 버리고 새 종이로 교체 |
+
+### 3) 실무 유즈케이스
+
+* **DELETE**: 데이터의 일부분만 선택적으로 삭제해야 하거나, 비즈니스 로직상 복구(Rollback)가 반드시 필요한 경우에 사용합니다. 예: "1년 지난 주문 데이터 중 '취소' 상태인 것만 삭제".
+* **TRUNCATE**: 테이블의 모든 데이터를 한꺼번에 날리고 완전히 처음부터 시작하고 싶을 때 사용합니다. 대량의 데이터를 삭제할 때 DELETE보다 훨씬 빠르며 물리적인 저장 공간을 효율적으로 반환합니다. 예: "임시 작업 테이블(Temporary Table)의 전체 데이터 삭제".
+
+### 4) 관련 키워드
+
+`DML` / `DDL` / `Transaction Log` / `Rollback` / `High Water Mark` / `Table Space` / `Drop` / `Constraint` / `Trigger`
+
+[🔝목차로 이동](#목차)
+
+---
+
+
+# 📄 리눅스 사용자(User)와 그룹(Group)
+
+### 1) 10초 요약
+
+* 리눅스는 **모든 사용자와 프로세스에 권한을 부여**하여 시스템을 안전하게 보호하는 다중 사용자 운영체제입니다.
+* 파일과 디렉토리는 각각 **소유자(Owner)**와 **그룹(Group)**을 가지며, 이를 통해 누가 읽고 쓰고 실행할 수 있는지 제어합니다.
+
+### 2) 핵심 요약
+
+| 구분 | 개념 | 설명 |
+| :--- | :--- | :--- |
+| **사용자 (User)** | 시스템 접근 주체 | 개인 계정(일반 사용자)과 시스템 관리자(root)로 나뉨 |
+| **소유자 (Owner)** | 파일/디렉토리 주인 | 해당 파일을 생성한 사용자, 파일에 대한 모든 권한 제어 가능 |
+| **그룹 (Group)** | 사용자들의 집합 | 같은 팀원이나 동일한 작업 권한이 필요한 사용자들을 묶어서 관리 |
+| **기타 (Others)** | 그 외 사용자 | 소유자도 아니고 소속 그룹도 아닌 나머지 모든 사용자 |
+| **직관적 비유** | "회사 사무실": 개인(사용자), 팀(그룹), 회사 전체(기타) | |
+
+### 3) 실무 유즈케이스 및 권한 관리
+
+리눅스에서 파일의 권한은 `rwx` (Read/Write/Execute) 세 가지로 나뉘며, `소유자/그룹/기타`에게 각각 부여됩니다.
+
+* **권한 확인**: `ls -l` 명령어로 파일의 소유자와 그룹, 권한을 확인합니다.
+    * 예: `-rw-r--r-- 1 user group 1024 ...` (소유자는 읽기/쓰기 가능, 그룹과 기타는 읽기만 가능)
+* **권한 변경(chmod)**: 파일의 권한을 변경합니다. (예: `chmod 755 file` -> 소유자(읽기/쓰기/실행), 그룹(읽기/실행), 기타(읽기/실행))
+* **소유권 변경(chown/chgrp)**: 파일의 주인이나 소속 그룹을 변경합니다. (예: `chown newuser file`)
+* **실무적 중요성**: 웹 애플리케이션(예: Nginx, Apache)은 특정 시스템 계정(예: `www-data`)으로 실행됩니다. 따라서 웹 서버가 로그 파일을 쓰거나 업로드 폴더에 파일을 저장하려면, 해당 디렉토리와 파일의 소유자가 `www-data` 계정이어야 합니다. 그렇지 않으면 "Permission Denied" 에러가 발생합니다.
+
+### 4) 관련 키워드
+
+`root` / `chmod` / `chown` / `chgrp` / `sudo` / `User ID (UID)` / `Group ID (GID)` / `Permission (rwx)` / `passwd` / `group` / `Access Control List (ACL)`
 
 [🔝목차로 이동](#목차)
 
