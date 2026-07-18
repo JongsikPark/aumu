@@ -24,7 +24,7 @@
 
 ## 🧭 바로가기
 
-* ✒️ **[GitHub Pages 바로가기](https://jongsikpark.github.io/aumu/#/)**
+* ✒️ **[도감 바로가기](mds/aumu.md)**
 
 * ❓ **[Quiz 풀기 바로가기](mds/quiz.md)**
 

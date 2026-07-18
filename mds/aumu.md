@@ -30,6 +30,8 @@
 
 - [MariaDB 실행계획(Execution Plan) 및 쿼리 튜닝](#-mariadb-실행계획execution-plan-및-쿼리-튜닝)
 
+- [무중단 배포(Zero-Downtime Deployment)](#-무중단-배포zero-downtime-deployment)
+
 ---
 
 # 📄웹 서버(Web Server) vs WAS(Web Application Server)
@@ -374,6 +376,52 @@
 
 ### 4) 관련 키워드
 `EXPLAIN` / `EXPLAIN ANALYZE` / `Query Optimizer` / `Index Range Scan` / `Full Table Scan` / `Using filesort` / `Using temporary` / `Clustered Index` / `Secondary Index` / `Covering Index` / `B-Tree Index` / `Slow Query Log` / `Selectivity` / `Cardinality` / `Nested Loop Join` / `Driving Table` / `Driven Table` / `STRAIGHT_JOIN` / `Implicit Type Conversion`
+
+[🔝목차로 이동](#목차)
+
+---
+
+
+# 📄 무중단 배포(Zero-Downtime Deployment)
+
+### 1) 10초 요약
+* 무중단 배포는 새로운 버전의 서비스를 릴리스할 때, 시스템이 일시적으로 정지(Downtime)하는 현상 없이 트래픽을 점진적으로 전환하여 사용자가 중단을 인지하지 못하게 하는 배포 기법입니다.
+* 대표적으로 롤링(Rolling), 블루-그린(Blue-Green), 카나리(Canary) 배포 방식이 있으며, 예산과 인프라 복잡도, 장애 리스크 허용 범위에 따라 유연하게 선택합니다.
+
+### 2) 핵심 요약
+
+| 구분 | 무중단 배포 (Zero-Downtime Deployment) |
+| :--- | :--- |
+| **주요 역할** | 기존 구버전 서버를 내리고 신버전 서버를 올리는 교체 주기 동안 접속 끊김이나 에러(502 Bad Gateway 등) 발생을 사전에 차단하고 365일 24시간 서비스 연속성 보장 |
+| **동작 원리** | 서비스 전면에 위치한 **로드 밸런서(Nginx, AWS ALB 등)**가 트래픽의 중개자 역할을 수행하며, 신규 인스턴스가 온전히 구동(Health Check 완료)된 것을 확인한 후 통신 경로를 제어 |
+| **핵심 기법 (3대 전략)** | - **Rolling (롤링)**: 서버를 한 대씩 순차적으로 구버전에서 신버전으로 업데이트 (비용 절감형)<br>- **Blue-Green (블루-그린)**: 구버전(Blue)과 동일한 규모의 신버전(Green) 환경을 나란히 구축하고 일시에 트래픽을 스위칭 (빠르고 안전한 롤백 가능)<br>- **Canary (카나리)**: 일부 타겟팅된 소수 사용자(예: 5%)에게 신버전을 먼저 개방하고, 버그가 없는지 검증해가며 전체 배포로 확장 (안정성 극대화) |
+| **직관적 비유** | - **롤링**: 달리는 기차의 바퀴(서버)를 멈추지 않고 하나씩 새 바퀴로 갈아 끼우는 행위<br>- **블루-그린**: 완벽한 새 집(Green)을 옆에 지어두고, 이삿날 대문을 열어 모든 짐과 트래픽을 한 번에 새 집으로 옮기는 일 |
+| **도전 과제 (고려사항)** | - **데이터베이스 호환성**: 구/신버전 애플리케이션이 동시에 DB를 바라볼 때 스키마 불일치가 생기지 않도록 하위 호환성(Backward Compatibility)을 유지해야 함<br>- **세션 끊김 방지**: 유저 세션이 구버전 서버 메모리에 남았다가 신버전 전환 시 유실될 수 있어, **Redis 등을 활용한 세션 클러스터링**이 필수적임 |
+
+### 3) 실무 유즈케이스
+
+#### 시나리오 A: 비용 추가 없이 쿠버네티스(Kubernetes) 환경에서 안정적인 Rolling 배포 구현하기
+* **상황**: 추가적인 인프라 예산 부담을 최소화하면서 24시간 서비스를 지속하고 싶은 스타트업입니다.
+* **실제 구현**: 쿠버네티스의 기본 배포 메커니즘인 `RollingUpdate` 전략을 적용합니다.
+  - 템플릿 설정에서 `maxSurge`와 `maxUnavailable` 값을 조절하여 일시적으로 띄울 여유 컨테이너 수와 내려갈 수 있는 한계치를 정합니다.
+  - 신규 Pod가 뜨는 중 오류가 나면 전체 배포가 멈추고 롤백되도록 설정하며, 컨테이너 내부에 `Readiness Probe`(준비성 검사) 경로를 설정해 스프링부트나 노드 서버가 DB 커넥션을 맺고 준비가 완전히 마쳐질 때까지 로드 밸런서가 트래픽을 흘려보내지 않게 제어합니다.
+
+#### 시나리오 B: 장애 발생 시 1초 만에 되돌릴 수 있는 Nginx / AWS Blue-Green 배포 전략
+* **상황**: 조금의 결제 에러도 허용하지 않는 이커머스 쇼핑몰의 백엔드 대규모 업데이트가 예정되어 있습니다. 장애 발생 시 가장 신속한 원복(Rollback) 경로가 보장되어야 합니다.
+* **실제 구현**: 가상 인프라(AWS ECS, EC2 등)를 이용해 똑같은 규모의 타겟 그룹 두 개(Blue/Green)를 운영합니다.
+  - 평소에는 Blue 인스턴스 그룹만 사용자를 마주하다가, 배포 시점에 Green 인스턴스 그룹에 빌드된 새 버전을 배포하고 사내망에서 최종 프리뷰 테스트를 거칩니다.
+  - 모든 준비가 끝난 순간 AWS ALB(Application Load Balancer)의 가중치를 Blue 100%에서 Green 100%로 전환합니다.
+  - 만약 예상치 못한 카드 결제 연동 에러가 터진다면? 다시 로드 밸런서의 타겟을 구버전(Blue)으로 즉각 되돌려 유저 피해를 차단합니다.
+
+#### 시나리오 C: 신기능의 리스크를 줄이고 대중의 반응을 모니터링하는 Canary 배포
+* **상황**: 수백만 명의 활성 사용자를 보유한 SNS 플랫폼에서 '새로운 맞춤형 추천 피드 알고리즘'을 도입하려 합니다. 알고리즘 오동작 시 대규모 이탈이 우려되는 상황입니다.
+* **실제 구현**: 카나리(Canary) 테스트 기법을 사용하여 트래픽 분산을 지능적으로 구성합니다.
+  - Nginx의 `split_clients` 모듈이나 Istio 같은 서비스 메쉬(Service Mesh) 도구를 사용하여 일반 트래픽의 오직 5%만 새 추천 서버로 가게 유도합니다.
+  - Datadog이나 Prometheus/Grafana 같은 APM 대시보드를 켜두고 5% 사용자의 에러 발생 빈도, 피드 노출 속도, 실제 사용자 체류 시간을 24~48시간 동안 면밀하게 수집합니다.
+  - 성능과 만족도가 검증되면 10%, 30%, 50%, 최종 100%로 새 버전을 전체 점진 반영합니다. 광산 속 카나리아 새처럼 치명적인 가스(치명적인 버그)를 먼저 탐지하고 큰 대피를 방지하는 훌륭한 방패가 됩니다.
+
+### 4) 관련 키워드
+`Rolling Update` / `Blue-Green Deployment` / `Canary Deployment` / `Readiness Probe` / `Liveness Probe` / `Health Check` / `Load Balancer` / `Nginx proxy_pass` / `Downtime` / `Graceful Shutdown` / `Session Clustering` / `Sticky Session` / `Service Mesh` / `Istio` / `CI/CD Pipeline` / `Backward Compatibility` / `Database Schema Migration` / `Route53 Weighted Routing`
 
 [🔝목차로 이동](#목차)
 
