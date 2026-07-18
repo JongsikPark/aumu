@@ -20,22 +20,10 @@
 
 ### 🎯 시험 범위 (핵심 키워드)
 
-* **인프라/아키텍처**
-  * 웹 서버(Web Server) vs WAS(Web Application Server)
-  * CI/CD (지속적 통합 / 지속적 제공 및 배포)
-  * CSR(Client-Side Rendering) vs SSR(Server-Side Rendering)
-
-* **데이터베이스**
-  * RDBMS(SQL) vs NoSQL
-  * 레디스(Redis) vs 일반 관계형 데이터베이스(RDB)
-
-* **보안/인증/스토리지**
-  * 인증(Authentication) vs 인가(Authorization)
-  * JWT vs 세션(Session) 인증
-  * 브라우저 쿠키(Cookie) vs 로컬 스토리지(Local Storage) vs 세션 스토리지(Session Storage)
+> `Web Server vs WAS` / `RDBMS vs NoSQL` / `Authentication vs Authorization` / `JWT vs Session` /  `CSR vs SSR` / `Redis vs RDB` / `CI/CD Pipeline` / `Browser Storage (Cookie, Local, Session)`
 
 ### 📝 퀴즈 풀어 보기
 
-* ❓ **[Quiz 1 풀기](https://notebooklm.google.com/notebook/ae5753fe-a1b4-477d-908b-f6565267881f/artifact/00d3d54b-55c4-462f-9efe-787eebb36c78?utm_source=nlm_web_share&utm_medium=google_oo&utm_campaign=art_share_1&utm_content=&utm_smc=nlm_web_share_google_oo_art_share_1_)**
+* ❓ **[Quiz 1 풀기 - 새 창 열기 권장(Ctrl + Click)](https://notebooklm.google.com/notebook/ae5753fe-a1b4-477d-908b-f6565267881f/artifact/00d3d54b-55c4-462f-9efe-787eebb36c78?utm_source=nlm_web_share&utm_medium=google_oo&utm_campaign=art_share_1&utm_content=&utm_smc=nlm_web_share_google_oo_art_share_1_)**
 
 ---
