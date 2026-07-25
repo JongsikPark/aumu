@@ -1,11 +1,13 @@
-# 🧐 도감 팩트 체크 퀴즈 (Quiz)
+# 📘 거의 쓸모없지만, 대체로 유용할지도 모르는 풀스택 웹 개발자를 위한 도감(Almost Useless, Mostly Useful Wiki For Full-Stack Web Developer) 체크 퀴즈 (Quiz)
 > **Google Gemini Notebook을 사용하여 자동 생성한 개발자 역량 테스트입니다.**
 
 ---
 
 ## 📝도감 한 번 훑어보기
 
-✒️ **[도감 바로가기](aumu.md)**
+✒️ **[도감1 바로가기](aumu.md)**
+
+✒️ **[도감2 바로가기](aumu2.md)**
 
 ---
 
@@ -32,9 +34,46 @@
 
 ### 🎯 시험 범위 (핵심 키워드)
 
-> `Web Server vs WAS` / `RDBMS vs NoSQL` / `Authentication vs Authorization` / `JWT vs Session` / `CSR vs SSR` / `Browser Storage (Cookie/Local/Session)` / `Database Query Tuning` / `Zero-Downtime Deployment Strategies` / `Web Security (XSS/CSRF)` / `Spring Boot Core Philosophy` / `Database Connection Pool` / `MQTT Protocol` / 
+> `Web Server vs WAS` / `RDBMS vs NoSQL` / `Authentication vs Authorization` / `JWT vs Session` / `CSR vs SSR` / `Browser Storage (Cookie/Local/Session)` / `Database Query Tuning` / `Zero-Downtime Deployment Strategies` / `Web Security (XSS/CSRF)` / `Spring Boot Core Philosophy` / `Database Connection Pool` / `MQTT Protocol`
+
 ### 📝 퀴즈 풀어 보기
 
 * ❓ **[Quiz 2 풀기 - 새 창 열기 권장(Ctrl + Click)](https://notebooklm.google.com/notebook/ae5753fe-a1b4-477d-908b-f6565267881f/artifact/b4093115-a357-4096-8e38-e4d841cc0031?utm_source=nlm_web_share&utm_medium=google_oo&utm_campaign=art_share_1&utm_content=&utm_smc=nlm_web_share_google_oo_art_share_1_)**
+
+---
+
+## 📅 Quiz 3 (2026.07.25. Generated)
+
+### 🎯 시험 범위 (핵심 키워드)
+
+> `Web Server vs WAS` / `RDBMS vs NoSQL` / `Authentication vs Authorization` / `CSR vs SSR` / `Redis Caching Strategy` / `Cookie Security` / `MariaDB Execution Plan` / `Zero-Downtime Deployment` / `SQL Injection Defense` / `MQTT Protocol`
+
+### 📝 퀴즈 풀어 보기
+
+* ❓ **[Quiz 3 풀기 - 새 창 열기 권장(Ctrl + Click)](https://notebooklm.google.com/notebook/ae5753fe-a1b4-477d-908b-f6565267881f/artifact/0bfcee26-3cfc-45a7-b33d-ed61751bb122?utm_source=nlm_web_share&utm_medium=google_oo&utm_campaign=art_share_1&utm_content=&utm_smc=nlm_web_share_google_oo_art_share_1_)**
+
+---
+
+## 📅 Quiz 4 (2026.07.25. Generated)
+
+### 🎯 시험 범위 (핵심 키워드)
+
+> `ACID vs BASE 모델 비교` / `RESTful API 설계 원칙` / `INNER JOIN vs OUTER JOIN` / `DELETE vs TRUNCATE` / `XSS와 CSRF 취약성` / `SEO vs GEO` / `RAG 파이프라인` / `HTTP vs HTTPS` / `GET vs POST 멱등성`
+
+### 📝 퀴즈 풀어 보기
+
+* ❓ **[Quiz 4 풀기 - 새 창 열기 권장(Ctrl + Click)](https://notebooklm.google.com/notebook/ae5753fe-a1b4-477d-908b-f6565267881f/artifact/610a73ff-690d-4a6d-9625-c6e5d1377674?utm_source=nlm_web_share&utm_medium=google_oo&utm_campaign=art_share_1&utm_content=&utm_smc=nlm_web_share_google_oo_art_share_1_)**
+
+---
+
+## 📅 Quiz 5 (2026.07.25. Generated)
+
+### 🎯 시험 범위 (핵심 키워드)
+
+`인증과 인가의 차이` / `JWT와 세션 인증 비교` / `Redis와 RDBMS의 특성` / `CI/CD 파이프라인 개념` / `동기 및 비동기 처리 방식` / `자바 웹 기술 스택의 발전` / `JPA와 MyBatis의 차이` / `필터와 인터셉터의 동작 영역` / `로드밸런싱과 고가용성` / `커넥션 풀 최적화 전략`
+
+### 📝 퀴즈 풀어 보기
+
+* ❓ **[Quiz 5 풀기 - 새 창 열기 권장(Ctrl + Click)](https://notebooklm.google.com/notebook/ae5753fe-a1b4-477d-908b-f6565267881f/artifact/e1ecb01d-40ea-4de0-b419-01ab4978d90b?utm_source=nlm_web_share&utm_medium=google_oo&utm_campaign=art_share_1&utm_content=&utm_smc=nlm_web_share_google_oo_art_share_1_)**
 
 ---

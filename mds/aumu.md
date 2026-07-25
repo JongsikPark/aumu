@@ -1,6 +1,11 @@
-# 📘 거의 쓸모없지만, 대체로 유용할지도 모르는 풀스택 웹 개발자를 위한 도감(Almost Useless, Mostly Useful Wiki For Full-Stack Web Developer)
+# 📘 거의 쓸모없지만, 대체로 유용할지도 모르는 풀스택 웹 개발자를 위한 도감(Almost Useless, Mostly Useful Wiki For Full-Stack Web Developer) 1편
 
 이 도감은 풀스택 개발자가 실무에서 가장 자주 혼동하거나, 구현 시 선택의 기로에 서게 되는 핵심 개념들을 1:1로 비교 정리한 가이드라인입니다.
+---
+
+## 📝도감 한 번 훑어보기
+
+✒️ **[도감2편 바로가기](aumu2.md)**
 
 ---
 
