@@ -1,5 +1,6 @@
 # 📘 거의 쓸모없지만, 대체로 유용할지도 모르는 풀스택 웹 개발자를 위한 도감(Almost Useless, Mostly Useful Wiki For Full-Stack Web Developer) 체크 퀴즈 (Quiz)
-> **Google Gemini Notebook을 사용하여 자동 생성한 개발자 역량 테스트입니다.**
+
+> 도감의 내용을 토대로 **Google Gemini Notebook**을 사용하여 **자동 생성**한 개발자 역량 테스트입니다.
 
 ---
 
@@ -75,5 +76,17 @@
 ### 📝 퀴즈 풀어 보기
 
 * ❓ **[Quiz 5 풀기 - 새 창 열기 권장(Ctrl + Click)](https://notebooklm.google.com/notebook/ae5753fe-a1b4-477d-908b-f6565267881f/artifact/e1ecb01d-40ea-4de0-b419-01ab4978d90b?utm_source=nlm_web_share&utm_medium=google_oo&utm_campaign=art_share_1&utm_content=&utm_smc=nlm_web_share_google_oo_art_share_1_)**
+
+---
+
+## 📅 Quiz 6 (2026.07.26. Generated)
+
+### 🎯 시험 범위 (핵심 키워드)
+
+`ELK Stack` / `Cloud Service Models (IaaS/PaaS/SaaS)` / `Software Architecture (Monolith/MSA)` / `Web Frontend Fundamentals (Markup/Tag/DOM)` / `Programming Language Paradigms` / `Network Communication Protocols (Socket/WebSocket)` / `CSS Specificity and Cascading` / `Database Search Engines vs Vector Databases` / `B+Tree Data Structures and Indexing` / `RDBMS Composite Primary Key Design` / `HTTP Status Codes and RESTful API Design`
+
+### 📝 퀴즈 풀어 보기
+
+* ❓ **[Quiz 6 풀기 - 새 창 열기 권장(Ctrl + Click)](https://notebooklm.google.com/notebook/ae5753fe-a1b4-477d-908b-f6565267881f/artifact/0f9cedf0-6d4d-4fed-b064-671887c4680c?utm_source=nlm_web_share&utm_medium=google_oo&utm_campaign=art_share_1&utm_content=&utm_smc=nlm_web_share_google_oo_art_share_1_)**
 
 ---
