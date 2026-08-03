@@ -4,7 +4,7 @@
 <p align="center">
   <img src="https://img.shields.io/badge/Markdown-000000?style=for-the-badge&logo=markdown&logoColor=white" alt="Markdown">
   <img src="https://img.shields.io/badge/Google Gemini-8E75B2?style=for-the-badge&logo=googlegemini&logoColor=white" alt="GoogleGemini">
-  <img src="https://img.shields.io/badge/NotebookLM-000000?style=for-the-badge&logo=notebooklm&logoColor=white" alt="NotebookLM">
+  <img src="https://img.shields.io/badge/Gemini Notebook-000000?style=for-the-badge&logo=notebooklm&logoColor=white" alt="NotebookLM">
   <img src="https://img.shields.io/badge/License-MIT-blue?style=for-the-badge" alt="License">
   <img src="https://img.shields.io/badge/Maintained-Yes-honeydew?style=for-the-badge" alt="Maintained">
 </p>
