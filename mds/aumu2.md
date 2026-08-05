@@ -27,6 +27,7 @@
 
 - [컴파일 언어(Compiled Language) vs 인터프리터 언어(Interpreted Language)](#-컴파일-언어compiled-language-vs-인터프리터-언어interpreted-language)
 
+
 - [소켓(Socket) vs 웹소켓(WebSocket)](#소켓socket-vs-웹소켓websocket)
 
 - [CSS 적용 우선순위(CSS Specificity & Cascading)](#css-적용-우선순위css-specificity--cascading)
@@ -36,6 +37,7 @@
 - [RDBMS 저장 구조(B+Tree) 및 인덱스 작동 원리](#rdbms-저장-구조btree-및-인덱스-작동-원리)
 
 - [RDBMS 복합 PK 설계 성능 고려사항 및 주의점](#rdbms-복합-pk-설계-성능-고려사항-및-주의점)
+
 
 - [HTTP 상태 코드 명세 및 RESTful API 응답 설계](#http-상태-코드-명세-및-restful-api-응답-설계)
 
@@ -47,6 +49,7 @@
 
 - [Git 브랜치 전략(Git Flow vs GitHub Flow)](#git-브랜치-전략git-flow-vs-github-flow)
 
+
 - [SOP(Same-Origin Policy)와 CORS(Cross-Origin Resource Sharing)](#-sopsame-origin-policy와-corscross-origin-resource-sharing)
 
 - [브라우저의 렌더링 과정(Browser Rendering Process)](#-브라우저의-렌더링-과정browser-rendering-process)
@@ -57,11 +60,27 @@
 
 - [DNS(Domain Name System) 동작 원리](#-dnsdomain-name-system-동작-원리)
 
+
 - [가상머신(Virtual Machine) vs 컨테이너(Container)](#-가상머신virtual-machine-vs-컨테이너container)
 
 - [포워드 프록시(Forward Proxy) vs 리버스 프록시(Reverse Proxy)](#-포워드-프록시forward-proxy-vs-리버스-프록시reverse-proxy)
 
 - [포트 포워딩(Port Forwarding)과 NAT(Network Address Translation)](#-포트-포워딩port-forwarding과-natnetwork-address-translation)
+
+- [LLM 런처(Launcher) vs 에이전트(Agent) vs 하네스(Harness)](#-llm-런처launcher-vs-에이전트agent-vs-하네스harness)
+
+- [자바스크립트(JavaScript) vs 타입스크립트(TypeScript)](#-자바스크립트javascript-vs-타입스크립트typescript)
+
+
+- [자바스크립트 변수 선언: var vs let vs const](#-자바스크립트-변수-선언-var-vs-let-vs-const)
+
+- [스프링 빈 생명주기(Spring Bean Lifecycle)](#-스프링-빈-생명주기spring-bean-lifecycle)
+
+- [객체 지향 설계의 5대 원칙: SOLID](#-객체-지향-설계의-5대-원칙-solid)
+
+- [로그 레벨(Log Level)과 로그 파일 롤링(Log File Rolling)](#-로그-레벨log-level과-로그-파일-롤링log-file-rolling)
+
+- [JSON(JavaScript Object Notation)](#-jsonjavascript-object-notation)
 
 ---
 
@@ -1391,6 +1410,262 @@ function recursiveMacrotask() {
 ### 4) 관련 키워드
 
 `NAT (Network Address Translation)` / `Port Forwarding` / `Public IP (공인 IP)` / `Private IP (사설 IP)` / `Subnet Mask` / `PAT (Port Address Translation)` / `Docker Port Mapping` / `AWS NAT Gateway` / `Inbound Traffic` / `Outbound Traffic` / `DDNS (Dynamic DNS)` / `UPnP` / `Gateway` / `Port Exhaustion` / `VPC (Virtual Private Cloud)` / `RFC 1918 (사설 IP 표준)` / `DMZ (De-Militarized Zone)` / `KT/SKT 가정용 공유기`
+
+[🔝목차로 이동](#목차)
+
+---
+
+# 📄 LLM 런처(Launcher) vs 에이전트(Agent) vs 하네스(Harness)
+
+### 1) 10초 요약
+
+    * LLM 런처는 모델을 로드하여 추론(Inference) 가능한 API 서버 형태로 제공하는 '인프라 엔진'이며, 에이전트는 사용자의 고차원적 목표 달성을 위해 스스로 판단하여 도구를 호출하고 작업을 수행하는 '자율주행 드라이버'입니다.
+    * 하네스는 미세조정(Fine-tuning)되거나 변경된 LLM의 품질과 능력을 다양한 벤치마크 데이터셋을 기반으로 정량 측정 및 검증하는 '독립적인 평가 프레임워크'입니다.
+
+### 2) 핵심 요약
+
+| 구분 | LLM 런처 (Launcher) | AI 에이전트 (Agent) | 평가 하네스 (Evaluation Harness) |
+| :--- | :--- | :--- | :--- |
+| **핵심 목적** | 오픈소스 LLM 모델을 하드웨어 자원에 로드하고, 외부에서 요청 가능한 추론(Inference) API를 제공 | 사용자의 복잡한 목표(Goal)를 이해하고 스스로 작업을 계획하여 외부 도구 호출 및 행동 루프를 수행 | 구축되거나 변경된 모델의 객관적인 성능, 언어 이해력, 논리력, 안전성 지표를 대량 테스트로 검증 |
+| **동작 메커니즘** | 모델 가중치(Weights) 적재 -> GPU 메모리 배치 최적화 -> 높은 속도로 텍스트 토크나이징 및 스트리밍 서빙 | 목표 정의 -> ReAct 프롬프팅(생각/행동/관찰) -> API 및 시스템 툴 호출 -> 결과 분석 후 다음 단계 결정 | 사전 정의된 평가 템플릿 주입 -> 모델 답변 생성 -> 표준 벤치마크 데이터셋 정답과 정밀 비교 채점 |
+| **대표적인 기술** | vLLM, Ollama, Llama.cpp, Hugging Face TGI | LangChain, CrewAI, AutoGPT, Microsoft AutoGen, LangGraph | lm-evaluation-harness, Ragas, DeepEval, Promptfoo |
+| **직관적 비유** | 맛있는 요리를 안정적이고 빠르게 만들어 낼 수 있도록 가스 불을 켜고 주방 화구를 준비하는 **'주방 인프라(가스레인지)'** | 손님의 주문이나 지시를 받고 알아서 재료를 공수하고 요리하여 맛깔스럽게 상을 차려내며 서빙까지 마치는 **'만능 셰프'** | 주방 인프라와 셰프가 합작하여 개발한 최종 요리의 염도, 세균, 위생, 칼로리를 엄격하고 정확하게 검사하는 **'식품 위생 검사소'** |
+| **실무적 장단점** | **장점**: 분당 처리량(Throughput) 극대화, 낮은 지연 시간, 오픈소스 자원 효율성 우수<br>**단점**: 단순 실행 통로일 뿐이므로 복잡한 비즈니스 조건이나 자율적 워크플로우 처리 불가 | **장점**: 코드로 하나하나 처리하기 힘든 불확실성이 큰 동적 다단계 태스크 자동화 가능<br>**단점**: 환각(Hallucination) 오류 시 엉뚱한 작업 수행 가능성 및 API 비용의 무한 루프 폭증 위험 | **장점**: 새로운 미세조정(Fine-Tuning) 버전 배포 전, 수천 개 시나리오 성능 변화를 정량 수치로 확신 가능<br>**단점**: 벤치마크 평가 데이터셋의 편향 및 소스 오염(Data Contamination) 관리 비용 발생 |
+
+### 3) 실무 유즈케이스
+
+    * **LLM 런처 (Launcher) 실무 도입 시나리오**
+        사내 내부망 보안 요구사항으로 인해 외부의 OpenAI GPT API를 사용할 수 없는 프로젝트에서, 독자적인 한국어 Llama-3 모델을 서버에 배포해야 할 때 사용합니다. 이때 `vLLM`을 런처로 사용하여 GPU 장비에 적재하고, KV Cache나 PagedAttention 등의 기술을 활성화하여 초당 동시 접속자가 많아도 쾌적하게 텍스트를 스트리밍해 주는 호환 API 엔드포인트를 아주 짧은 시간 안에 견고하게 구축할 수 있습니다.
+
+    * **AI 에이전트 (Agent) 실무 도입 시나리오**
+        "이번 주 핀테크 업계 동향 기사를 전부 긁어와서, 해외 기사는 한글로 번역한 후 일간 핵심 트렌드를 세 줄로 요약해서 메신저 채널에 매일 아침 공유해 줘" 같은 고차원의 다단계 자동화 업무를 구현할 때 활용합니다. `CrewAI`나 `LangGraph` 에이전트를 구성하면, 에이전트가 알아서 웹 검색 도구로 최신 뉴스를 긁어오고, LLM으로 번역과 정리를 수행한 다음, 슬랙(Slack) 발송 API를 선택해 완수해 냅니다.
+
+    * **평가 하네스 (Evaluation Harness) 실무 도입 시나리오**
+        특정 상담 업종에 특화되도록 개발팀이 직접 수백만 건의 대화 데이터를 기반으로 LLM을 미세조정(Fine-Tuning)하여 배포할 예정일 때 활용합니다. 새로 업데이트된 모델이 이전 모델보다 답변을 더 정확히 하는지, 욕설이나 개인정보를 필터링하는지 검증해야 합니다. 이 경우 `lm-evaluation-harness`나 `Ragas`를 CI/CD 파이프라인에 연결하여 한국어 상식, 윤리, 안전성 지표를 자동으로 정량 점수화하고 합격 기준을 충족할 때만 무중단 배포를 진행하도록 설계합니다.
+
+### 4) 관련 키워드
+
+    * **LLM 서빙/런처 관련**: `vLLM` / `Ollama` / `Llama.cpp` / `TGI (Text Generation Inference)` / `TensorRT-LLM` / `PagedAttention` / `Quantization (GGUF/AWQ)` / `KV Cache` / `Inference API` / `Continuous Batching`
+    * **자율 워크플로우/에이전트 관련**: `ReAct Pattern` / `Tool Calling (Function Calling)` / `Memory (Short-term / Long-term)` / `LangChain & LangGraph` / `CrewAI` / `Autonomous Planning` / `Reflection & Evaluation Loop` / `Multi-Agent System`
+    * **모델 테스트/하네스 관련**: `lm-evaluation-harness` / `Ragas` / `DeepEval` / `Promptfoo` / `MMLU` / `GSM8k` / `LLM-as-a-Judge` / `Benchmark Datasets` / `Evaluation Metric` / `Data Contamination`
+
+[🔝목차로 이동](#목차)
+
+---
+
+# 📄 자바스크립트(JavaScript) vs 타입스크립트(TypeScript)
+
+### 1) 10초 요약
+
+    * 자바스크립트는 런타임에 타입이 결정되는 동적 타입의 스크립트 언어이며, 타입스크립트는 정적 타입을 도입하여 컴파일 시점에 오류를 미리 잡아내는 자바스크립트의 초상위 집합(Superset) 언어입니다.
+    * 자바스크립트가 브라우저나 Node.js 환경에서 직접 실행될 수 있는 완성품이라면, 타입스크립트는 개발자 경험과 코드의 안정성을 고도화하기 위한 컴파일 타임 보호막 역할을 수행합니다.
+
+### 2) 핵심 요약
+
+| 구분 | 자바스크립트 (JavaScript) | 타입스크립트 (TypeScript) |
+| :--- | :--- | :--- |
+| **개념 정의** | 브라우저 인터프리터 위에서 즉시 실행되는 표준 동적 스크립트 언어 | 컴파일 단계를 거쳐 자바스크립트 파일로 변환되는 정적 타입 확장 언어 |
+| **타입 결정 시점** | **런타임 (Runtime)**: 프로그램이 실제로 실행되는 도중에 변수의 타입이 결정되고 동적으로 변화 가능 | **컴파일/트랜스파일 (Compile/Transpile)**: 개발 과정에서 코드 작성 중 또는 빌드 시점에 타입 검사 완료 |
+| **에러 발견 시점** | 코드가 실행된 이후, 실제 해당 라인이 실행될 때 비로소 에러를 발견 (사용자 버그 리포트) | IDE 상에서 코드를 작성하는 도중(실시간 피드백) 또는 빌드/컴파일 중에 즉시 에러 포착 |
+| **대표적인 기술** | HTML5 웹 애플리케이션, Node.js 서버, React/Vue/Angular 등 브라우저 환경 실행 코드 | Nest.js, Angular, 대규모 리액트 프로젝트, TS-Node, tsc 컴파일러 |
+| **직관적 비유** | 설계도 없이 즉석에서 뼈대를 이어 붙여 빠르고 자유롭게 구조물을 세우는 **'유연한 레고 놀이'** | 안전 진단 전문가가 미리 지정한 엄격한 규격 설계도를 바탕으로 볼트 하나하나 체크해가며 세우는 **'안전제일 건축물'** |
+| **실무적 장단점** | **장점**: 빠른 프로토타이핑 가능, 컴파일 단계가 없어 빌드 타임 없음.<br>**단점**: 협업 시 데이터 구조의 직관성 파악이 어려우며, 단순 오타 에러 조기 발견 불가 | **장점**: 강력한 자동완성 기능과 정적 검사로 대규모 협업 유지보수에 압도적으로 유리<br>**단점**: 빌드(컴파일) 시간 추가, 초기 타입 정의 작성 오버헤드 존재 |
+
+### 3) 실무 유즈케이스
+
+    * **자바스크립트 (JavaScript) 실무 채택 시나리오**
+        기존에 구축된 수년 전 레거시 웹 시스템을 가볍게 수정하거나, 아주 간단한 이벤트 랜딩 페이지 또는 1인 개발 기반의 초소형 MVP(Minimum Viable Product) 프로토타입을 단 하루 만에 빠르게 검증하고 싶을 때 사용합니다. 초기 복잡한 인터페이스 설계 비용 없이, 즉시 브라우저와 연동되는 가벼운 소스코드를 구현하고자 할 때 적합합니다.
+
+    * **타입스크립트 (TypeScript) 실무 채택 시나리오**
+        3명 이상의 프론트엔드/백엔드 개발자가 협업하여 결제 모듈, 유저 어카운트 관리 등 복잡한 비즈니스 로직과 API 데이터 타입을 공유해야 하는 기업용 웹 서비스를 제작할 때 필수적으로 도입합니다. API 스키마를 타입스크립트 인터페이스(`interface`)로 지정해 두면, 백엔드가 내려주는 JSON 데이터 필드 중 하나가 누락되거나 오타가 발생했을 때 프론트엔드 코드 단에서 빨간 줄로 즉시 경고해 주어 오작동을 원천 봉쇄할 수 있습니다.
+
+### 4) 관련 키워드
+
+    * **타입 시스템 & 정적 검사**: `Static Typing` / `Dynamic Typing` / `Type Inference` / `Duck Typing` / `Strong vs Weak Typing` / `Structural Subtyping` / `Type Guard`
+    * **컴파일 & 트랜스파일**: `tsc (TypeScript Compiler)` / `Transpile` / `Babel` / `TSConfig` / `Target ES Version` / `Source Map` / `Superset`
+    * **핵심 문법 및 추상화**: `Interface` / `Type Alias` / `Generic` / `Union Type` / `Intersection Type` / `Abstract Class` / `Utility Types` / `Strict Mode`
+
+[🔝목차로 이동](#목차)
+
+---
+
+# 📄 자바스크립트 변수 선언: var vs let vs const
+
+### 1) 10초 요약
+
+    * `var`는 함수 스코프를 따르며 재선언과 재할당이 모두 가능한 레거시 변수 선언 키워드인 반면, `let`과 `const`는 ES6에 도입된 블록 스코프 변수 선언 방식입니다.
+    * `let`은 재선언은 불가능하지만 값을 바꿀 수 있는 재할당이 가능하고, `const`는 선언과 동시에 초기화해야 하며 재선언 및 재할당이 모두 금지되는 상수(Constant) 선언용 키워드입니다.
+
+### 2) 핵심 요약
+
+| 구분 | var | let | const |
+| :--- | :--- | :--- | :--- |
+| **스코프 (Scope)** | **함수 레벨 스코프 (Function Scope)**: 함수 외부에서는 참조 불가능하지만 블록(if, for 등) 안에서 선언해도 블록 밖에서 참조 가능 | **블록 레벨 스코프 (Block Scope)**: 중괄호 `{}`로 감싸진 모든 블록(if, for, 함수 등) 내부로 스코프가 제한됨 | **블록 레벨 스코프 (Block Scope)**: 중괄호 `{}`로 감싸진 모든 블록 내부로 스코프가 제한됨 |
+| **재선언 가능 여부** | **가능**: `var x = 1; var x = 2;` 처럼 동일한 변수명으로 중복 선언해도 에러가 발생하지 않음 | **불가능**: 동일 스코프 내에서 이미 선언된 이름으로 중복 선언 시 SyntaxError 발생 | **불가능**: 동일 스코프 내에서 이미 선언된 이름으로 중복 선언 시 SyntaxError 발생 |
+| **재할당 가능 여부** | **가능**: 변수 생성 후 언제든지 값을 변경할 수 있음 | **가능**: 변수 생성 후 값을 얼마든지 새로운 값으로 재할당 가능 | **불가능**: 선언과 동시에 값 초기화가 강제되며, 이후 값을 직접 변경(재할당)하면 TypeError 발생 |
+| **호이스팅 (Hoisting)** | **선언과 초기화 동시에 발생**: 선언 단계가 최상단으로 끌어올려지며 메모리에 `undefined`로 초기화되어 선언 전 참조 시 에러가 아닌 `undefined` 반환 | **선언만 발생 (초기화는 실제 코드라인에서)**: 호이스팅 자체는 발생하나 초기화 전까지 **TDZ(일시적 사각지대)**에 갇혀 선언 전 참조 시 ReferenceError 발생 | **선언만 발생 (초기화는 실제 코드라인에서)**: 호이스팅 자체는 발생하나 초기화 전까지 **TDZ**에 갇혀 선언 전 참조 시 ReferenceError 발생 |
+| **직관적 비유** | 이름표를 마음대로 지우고 떼었다가 심지어 같은 이름표를 방바닥(함수 전체)에 여러 개 막 붙여도 되는 **'규칙 없는 무법자 낙서판'** | 연필로 쓴 낙서와 같아서, 필요하면 지우개로 지우고(재할당) 다시 쓸 수 있지만 같은 자리에 같은 이름표를 두 번 붙일 수는 없는 **'수정 가능 이름표'** | 한 번 조각해 두면 절대 형태를 지우거나 바꿀 수 없는 돌에 새긴 금석문(상수)과 같으나, 물건 내부에 들어있는 소품(객체의 프로퍼티)은 바꿀 수 있는 **'봉인된 상자'** |
+
+### 3) 실무 유즈케이스
+
+    * **var 실무 사용 여부 (현재 시점)**
+        현대적인 프론트엔드/백엔드 자바스크립트 프로젝트(ES6 이상)에서는 코드 오작동 및 스코프 예측 불가능성(예: 반복문 내부 변수 누출) 때문에 **`var`의 사용을 금지(Deprecated)**하는 것을 절대 규칙으로 삼습니다. 코드 린터(ESLint) 환경에서도 `no-var` 규칙을 통과하도록 설정하는 것이 실무 표준입니다.
+
+    * **let 실무 채택 시나리오**
+        루프 인덱스 변수(`for (let i = 0; i < 10; i++)`)처럼 루프 안에서 상태가 주기적으로 업데이트되어야 하거나, 조건에 따라 값을 계속 덮어써야 하는 동적 로직(예: 합산 누적 변수, 플래그 변수)에서 선택적으로 사용합니다.
+
+    * **const 실무 채택 시나리오**
+        기본적으로 자바스크립트 소스코드를 구성할 때 **모든 변수는 최초에 `const`로 선언하는 것이 기본 원칙(Default Option)**입니다. API 응답 데이터(`const response`), 설정 파일 객체(`const config`), 함수 표현식 선언(`const handleClick`) 등 재할당이 필요 없는 모든 영역에 적용합니다. 이렇게 하면 우발적인 값 변경에 따른 사이드 이펙트(Side Effect)를 코드 레벨에서 완벽히 방지하여 안정성을 대폭 높일 수 있습니다. (단, `const`로 선언된 객체나 배열 내부의 프로퍼티/요소 자체는 수정할 수 있음에 유의해야 합니다.)
+
+### 4) 관련 키워드
+
+    * **스코프 & 메모리**: `Function Scope` / `Block Scope` / `Lexical Environment` / `Execution Context` / `Global Variable` / `Variable Shadowing`
+    * **동작 원리**: `Hoisting` / `Temporal Dead Zone (TDZ)` / `Memory Allocation` / `Garbage Collection` / `SyntaxError` / `TypeError`
+    * **타입 특성 & ES6**: `Immutability` / `Object.freeze()` / `ES6 (ECMAScript 2015)` / `Primitive vs Reference Types` / `Strict Mode` / `Linting (ESLint)`
+
+[🔝목차로 이동](#목차)
+
+---
+
+# 📄 스프링 빈 생명주기(Spring Bean Lifecycle)
+
+### 1) 10초 요약
+
+    * 스프링 빈(Spring Bean)의 생명주기는 '스프링 컨테이너 생성 -> 빈 인스턴스화 -> 의존관계 주입 -> 초기화 콜백 -> 빈 사용 -> 소멸 전 콜백 -> 스프링 종료'의 단계를 거쳐 엄격하게 관리됩니다.
+    * 빈의 초기화 및 소멸 단계에서 개발자가 필요한 커스텀 로직을 실행할 수 있도록 `@PostConstruct`, `@PreDestroy` 애노테이션이나 인터페이스 구현, `@Bean(initMethod, destroyMethod)` 등을 활용해 콜백을 제공합니다.
+
+### 2) 핵심 요약
+
+| 구분 | 스프링 빈 생명주기 (Spring Bean Lifecycle) |
+| :--- | :--- |
+| **개념 정의** | 스프링 컨테이너(IoC Container)가 객체의 생성부터 소멸까지 모든 제어권을 갖고 단계별로 관리하는 일련의 흐름 |
+| **전체 흐름** | **1. 컨테이너 생성** -> **2. 빈 생성(Instantiation)** -> **3. 의존성 주입(Populate Properties)** -> **4. 초기화 콜백(Initialization)** -> **5. 사용(Ready)** -> **6. 소멸 전 콜백(Destruction)** -> **7. 컨테이너 종료** |
+| **초기화 방식** | **1. 애노테이션**: `@PostConstruct` (권장)<br>**2. 인터페이스**: `InitializingBean` 인터페이스의 `afterPropertiesSet()` 구현<br>**3. 설정 정보 지정을 통한 initMethod**: `@Bean(initMethod = "init")` |
+| **소멸 방식** | **1. 애노테이션**: `@PreDestroy` (권장)<br>**2. 인터페이스**: `DisposableBean` 인터페이스의 `destroy()` 구현<br>**3. 설정 정보 지정을 통한 destroyMethod**: `@Bean(destroyMethod = "close")` |
+| **직관적 비유** | 아파트 관리사무소(스프링 컨테이너)에서 입주민(객체)을 등록하고, 입주 즉시 전기/수도 라인을 정밀하게 연결(의존성 주입)해 준 뒤, 안전 가동 스위치 테스트(초기화)를 통과시켜 정상 생활(Ready)하게 하고, 전출 시 가스 밸브를 안전하게 잠가주는(소멸) **'첨단 스마트 아파트의 관리 자동화 시스템'** |
+| **실무적 장단점** | **장점**: 개발자가 객체의 복잡한 결합 및 해제 로직을 직접 코딩하지 않아도 되며, 자원 누수(DB 연결 풀, 소켓 미종료 등)를 컨테이너 차원에서 자동 방지 가능<br>**단점**: 프레임워크에 대한 이해도가 부족하면 의존성 주입이 덜 끝난 시점에 객체 메소드를 호출하여 발생하는 무수한 NullPointerException을 마주하게 됨 |
+
+### 3) 실무 유즈케이스
+
+    * **데이터베이스 커넥션 풀(HikariCP) 및 네트워크 소켓 초기화**
+        백엔드 서버가 구동될 때 데이터베이스와의 연결 정보를 담은 Connection Pool을 미리 생성해 두거나, 외부 결제사 및 인증 서버와의 소켓 통신을 미리 연결(Handshake)해 두고 싶을 때 생명주기 콜백을 사용합니다. 생성자 단계에서는 의존성 주입(예: 데이터베이스 URL, 계정 패스워드 설정 정보 등)이 완료되지 않은 상태이기 때문에, `@PostConstruct` 애노테이션이 붙은 메소드를 정의하여 주입이 완료된 설정값을 바탕으로 안전하게 Connection Pool을 초기화합니다.
+
+    * **안전한 어플리케이션 종료 처리 (Graceful Shutdown)**
+        서버를 재시작하거나 종료할 때, 현재 처리 중인 사용자의 요청(Transaction)을 끝까지 안전하게 처리하고 사용 중이던 DB 커넥션이나 파일 시스템 버퍼, 외부 네트워크 연결을 깔끔하게 닫고 종료해야 리소스 낭비나 데이터 손실이 없습니다. 소멸 콜백인 `@PreDestroy` 메소드 내부에서 버퍼 플러시(Flush), 활성화된 세션의 안전한 정리 등을 구현하여 서버 프로세스 종료 시 안정성을 보장합니다.
+
+### 4) 관련 키워드
+
+    * **IoC/DI 컨테이너**: `Inversion of Control` / `Dependency Injection` / `BeanFactory` / `ApplicationContext` / `Bean Definition` / `Singleton Scope` / `Prototype Scope`
+    * **생명주기 단계 및 콜백**: `Instantiation` / `Populate Properties` / `BeanNameAware` / `BeanFactoryAware` / `ApplicationContextAware` / `BeanPostProcessor` / `InitializingBean` / `DisposableBean` / `@PostConstruct` / `@PreDestroy`
+    * **실무적 활용**: `Graceful Shutdown` / `Database Connection Pool` / `HikariCP` / `Socket Connection` / `Lazy Initialization` / `Eager Initialization`
+
+[🔝목차로 이동](#목차)
+
+---
+
+# 📄 객체 지향 설계의 5대 원칙: SOLID
+
+### 1) 10초 요약
+
+    * 객체 지향 5대 설계 원칙(SOLID)은 유연하고 변경이 용이하며, 장기적으로 유지보수하기 쉬운 안정적인 소프트웨어 시스템을 설계하기 위한 핵심 지침입니다.
+    * 단일 책임(SRP), 개방-폐쇄(OCP), 리스코프 치환(LSP), 인터페이스 분리(ISP), 의존역전(DIP) 다섯 원칙으로 구성되며, 추상화와 다형성을 적극 활용하여 결합도를 낮추고 응집도를 높이는 데 기여합니다.
+
+### 2) 핵심 요약
+
+| 원칙 | 한글 명칭 | 핵심 요약 및 동작 방식 | 직관적 비유 |
+| :--- | :--- | :--- | :--- |
+| **SRP** (Single Responsibility) | **단일 책임 원칙** | 하나의 클래스는 단 하나의 책임을 가져야 하며, 클래스를 변경하는 이유는 단 하나여야 합니다. 코드 변경의 전파를 최소화합니다. | 사과를 깎는 칼, 빵을 자르는 톱이 일체형인 스위스 아미 나이프가 아니라, 용도에 맞게 완벽히 분리된 **'단일 목적 주방 도구들'** |
+| **OCP** (Open-Closed Principle) | **개방-폐쇄 원칙** | 확장에는 열려(Open) 있고, 변경에는 닫혀(Closed) 있어야 합니다. 즉, 기존 코드를 수정하지 않고도 기능을 확장할 수 있어야 합니다. | 컴퓨터 본체를 뜯어 회로를 고칠 필요 없이, 포트에 꼽기만 하면 마우스, 키보드, 오디오가 즉시 정상 작동되는 **'USB 포트 규격'** |
+| **LSP** (Liskov Substitution) | **리스코프 치환 원칙** | 서브 타입(자식 클래스)은 언제나 자신의 기반 타입(부모 클래스)을 대체할 수 있어야 합니다. 즉, 상속 계약 관계를 깨뜨리지 않아야 합니다. | 가속 페달을 밟으면 전진한다는 기본 약속을 완벽히 지켜 아반떼든 제네시스든 운전자가 무리 없이 바꿔 타서 운전할 수 있는 **'가속 페달 표준화 인터페이스'** |
+| **ISP** (Interface Segregation) | **인터페이스 분리 원칙** | 클라이언트는 자신이 사용하지 않는 메소드에 의존하도록 강제받지 않아야 합니다. 범용 인터페이스 하나보다 구체적인 인터페이스 여러 개가 낫습니다. | 하나의 거대한 복합 리모컨 대신, 에어컨 조절기, 텔레비전 리모컨, 도어락 키패드로 각각 명확히 분리된 **'개별 무선 조절기'** |
+| **DIP** (Dependency Inversion) | **의존관계 역전 원칙** | 구체적인 상위/하위 모듈에 직접 의존하지 말고, 상위/하위 모두 '추상화(인터페이스)'에 의존해야 합니다. 구현체는 언제든 갈아 끼울 수 있어야 합니다. | 타이어 브랜드(한국타이어, 미쉐린)에 차체를 직접 결합하지 않고, 표준 휠 축 규격(인터페이스)에 바퀴를 언제든 편리하게 갈아 끼우는 **'휠 축 규격화'** |
+
+### 3) 실무 유즈케이스
+
+    * **OCP와 DIP를 활용한 결제 시스템(PG) 통합**
+        우리 서비스가 신용카드 결제를 지원하고 있으며, 기존에는 `TossPaymentService`라는 구체적인 클래스에 직접 결결합되어 있었다고 해봅시다. 만약 나중에 카카오페이나 네이버페이 결제를 추가하려면 결제 메인 로직 코드 전체를 대폭 수정해야 하므로 OCP 원칙이 위배됩니다.
+        이 문제를 해결하기 위해 `PaymentHelper`라는 추상 인터페이스를 선언하고, `TossHelper`, `KakaoHelper` 등이 이 인터페이스를 구현하도록 만듭니다. 결제 컨트롤러는 오직 `PaymentHelper` 인터페이스에만 의존(DIP 구현)하도록 설계하면, 신규 결제사가 추가되더라도 메인 비즈니스 로직의 단 한 줄도 수정하지 않고 새로운 클래스만 만들어 주입하는 것으로 확장이 끝납니다(OCP 완성).
+
+    * **LSP 위반 방지를 위한 올바른 상속 설계**
+        `Bird` 부모 클래스에 `fly()` 메소드가 정의되어 있고, 이를 상속받아 펭귄(`Penguin`) 클래스를 만든다면 어떻게 될까요? 펭귄은 날 수 없기 때문에 펭귄 내부의 `fly()` 메소드에서 "UnsupportedOperationException" 에러를 던지도록 코딩할 수 있습니다.
+        하지만 이는 "부모 객체의 자리에 자식 객체를 넣어도 정상 작동해야 한다"는 LSP 원칙을 정면으로 위반하는 설계입니다. 실무에서는 이 상속을 피하고, 날 수 있는 새를 나타내는 `FlyingBird` 클래스나 인터페이스를 별도로 분리하여 상속 단계를 재설정하거나, 상속보다는 조합(Composition)을 활용하여 설계를 변경해야 유지보수 시 예측 불가능한 런타임 크래시를 방지할 수 있습니다.
+
+### 4) 관련 키워드
+
+    * **객체 지향 기본 이론**: `Encapsulation (캡슐화)` / `Inheritance (상속)` / `Polymorphism (다형성)` / `Abstraction (추상화)` / `Cohesion (응집도)` / `Coupling (결합도)`
+    * **SOLID 상세 설계**: `Single Responsibility` / `Open-Closed` / `Liskov Substitution` / `Interface Segregation` / `Dependency Inversion` / `Composition over Inheritance`
+    * **실무적 적용 도구**: `Spring DI (Dependency Injection)` / `Design Patterns (Strategy, Template Method, Factory, etc.)` / `Mocking & Unit Testing` / `Refactoring`
+
+[🔝목차로 이동](#목차)
+
+---
+
+# 📄 로그 레벨(Log Level)과 로그 파일 롤링(Log File Rolling)
+
+### 1) 10초 요약
+
+    * 로그 레벨은 중요도와 수집 필요성에 따라 기록되는 로그의 세분성(TRACE ~ FATAL)을 관리하여 불필요한 IO 비용과 저장 공간을 통제하는 정책입니다.
+    * 로그 파일 롤링은 단일 로그 파일이 너무 커져 서버 디스크가 꽉 차거나 뷰어로 로그를 읽기 불가능한 상황을 방지하기 위해 파일 크기나 날짜 기준으로 로그 파일을 자동 분할/압축 보관하는 관리 기법입니다.
+
+### 2) 핵심 요약
+
+| 구분 | 로그 레벨 (Log Level) | 로그 파일 롤링 (Log File Rolling) |
+| :--- | :--- | :--- |
+| **핵심 목적** | 런타임 환경에 따라 출력할 로그 메시지의 수위/필터를 결정하여 무의미한 저장 장치 낭비와 IO 부하를 줄임 | 디스크 풀(Disk Full) 에러를 방지하고 대량의 로그 이력 중 특정 시점의 에러 상황을 빠르게 추적할 수 있도록 파일을 안전하게 관리 |
+| **작동 원리** | 개발자가 지정한 레벨(예: INFO) 이상의 메시지만 기록하고 하위 레벨(예: DEBUG)은 필터링하여 무시하는 방식 | 하루 단위(날짜 기준) 혹은 10MB 단위(크기 기준)의 임계치에 도달하면 기존 로그 파일명을 바꾸고 백업 및 압축 처리 |
+| **전형적인 단계** | `TRACE` -> `DEBUG` -> `INFO` -> `WARN` -> `ERROR` -> `FATAL` 순서로 중요도 상승 (설정 레벨보다 높거나 같은 로그만 기록됨) | `TimeBasedTriggeringPolicy` (시간 기반) / `SizeBasedTriggeringPolicy` (크기 기반) / `DefaultRolloverStrategy` (최대 파일 보관 개수 설정) |
+| **대표적인 기술** | Logback, Log4j2, Winston, SLF4J, Bunyan, Pino | Logback의 `RollingFileAppender`, `FixedWindowRollingPolicy`, `SizeAndTimeBasedRollingPolicy` |
+| **직관적 비유** | 소소한 잡담(DEBUG)은 가볍게 한 귀로 흘려듣고, 중요한 할 일(INFO)이나 긴급 지시(ERROR)만 수첩에 기록하는 **'정보 필터링 비서'** | 메모할 노트가 다 차서 펜이 안 나가거나 노트를 잃어버리는 것을 막기 위해, 매달 새 수첩으로 바꾼 뒤 이전 수첩은 창고 상자에 넣고 라벨링해 보관하는 **'문서 기록 아카이빙 비서'** |
+| **실무적 장단점** | **장점**: 개발/로컬 환경에서는 상세한 흐름을, 운영 환경에서는 안전하고 조용한 고성능 로깅 가능<br>**단점**: 너무 높은 레벨(예: WARN)로 지정하면 예기치 못한 에러 발생 시 직전 상황 복기 불가 | **장점**: 로그 누적에 따른 서버 디스크 다운 방지, 보존 기간(예: 30일) 자동 만료 지원<br>**단점**: 적절한 백업 정책이 없으면 압축 작업 수행 시 일시적인 CPU 사용률 상승 |
+
+### 3) 실무 유즈케이스
+
+    * **로그 레벨 (Log Level) 운영 관리 시나리오**
+        우리가 배달 앱 서버를 배포한다고 가정해봅시다. 로컬 PC에서 개발할 때는 쿼리가 정상적으로 도는지, 세션 키가 무엇인지 알고 싶으므로 `DEBUG` 혹은 `TRACE` 레벨로 세밀하게 로그를 찍어 문제를 잡습니다. 하지만 매초 수만 건의 결제 요청이 들어오는 리얼 운영 서버에 이 레벨을 그대로 배포하면 수 기가바이트(GB)의 디스크가 단 몇 시간 만에 가득 차고 서버가 마비될 것입니다. 따라서 운영 환경의 로그 레벨은 `INFO`나 `WARN`으로 설정하고, 치명적인 오류 상황만 `ERROR` 로그로 수집하여 슬랙 알림과 모니터링 시스템(예: Sentry)으로 우회 수집합니다.
+
+    * **로그 파일 롤링 (Log File Rolling) 운영 관리 시나리오**
+        쇼핑몰 대형 이벤트 당일, 수백만 트래픽이 몰려 로그가 순식간에 수십 GB 쌓였습니다. 롤링 정책을 세우지 않아 `app.log` 단 하나의 파일에 모든 로그가 누적되었다면, 특정 오류를 추적하기 위해 50GB짜리 텍스트 파일을 여는 순간 서버와 터미널 뷰어가 통째로 뻗어 버립니다. 이 문제를 막기 위해 실무에서는 `SizeAndTimeBasedRollingPolicy`를 사용해 "매일 한 번 분할하되, 하루 중 파일 크기가 100MB를 넘으면 `app.2026-08-05.1.log.gz` 형태로 즉시 압축 분할하고 최대 30일간 보관한 뒤 오래된 로그는 순차 삭제"하도록 설정해 둡니다.
+
+### 4) 관련 키워드
+
+    * **로깅 인프라 및 핵심 구조**: `Logback` / `Log4j2` / `SLF4J` / `Winston` / `Appender` / `Layout` / `Pattern Layout` / `Logger Context` / `MDC (Mapped Diagnostic Context)`
+    * **레벨 및 제어**: `TRACE` / `DEBUG` / `INFO` / `WARN` / `ERROR` / `FATAL` / `Log level Override` / `Sentry` / `ELK Stack` / `Logstash` / `Fluentd`
+    * **롤링 및 유지 관리**: `RollingFileAppender` / `SizeAndTimeBasedRollingPolicy` / `Triggering Policy` / `Max History` / `Total Size Cap` / `Log Rotation` / `Disk Space Monitoring`
+
+[🔝목차로 이동](#목차)
+
+---
+
+# 📄 JSON(JavaScript Object Notation)
+
+### 1) 10초 요약
+
+    * JSON은 클라이언트와 서버 간의 데이터 교환을 위해 널리 사용되는 경량의 텍스트 기반 데이터 포맷입니다.
+    * 자바스크립트의 객체 표기법을 기반으로 하지만, 특정 프로그래밍 언어에 종속되지 않고 대부분의 언어에서 파싱 및 생성이 용이하여 사실상의 글로벌 웹 표준으로 자리 잡았습니다.
+
+### 2) 핵심 요약
+
+| 구분 | JSON (JavaScript Object Notation) |
+| :--- | :--- |
+| **개념 정의** | 사람이 읽을 수 있는 텍스트를 사용하여 '키-값(Key-Value)' 쌍과 '배열' 데이터 객체를 구성하는 표준 오픈 포맷 |
+| **데이터 타입** | **6가지 기본 타입**: String, Number, Object, Array, Boolean, Null (※ 함수, `undefined`, `NaN` 등은 전송 불가) |
+| **비교 대상 (XML/YAML)** | **XML 대비**: 태그가 없어 용량이 가볍고 파싱 속도가 압도적으로 빠름<br>**YAML 대비**: 가독성은 다소 낮으나 괄호 기반 구조라 파싱 규칙이 더 명확하고 유연함 |
+| **직관적 비유** | 서로 다른 국가(프로그래밍 언어)의 사람들이 의사소통하기 위해 공통으로 사용하는 표준 발음 기호와 어휘를 갖춘 **'글로벌 공용어(에스페란토)'** |
+| **실무적 장단점** | **장점**: 어떤 언어에서도 기본 라이브러리로 변환(`parse`, `stringify`)이 매우 쉽고 텍스트 파일이라 용량이 가벼움<br>**단점**: 주석을 기본적으로 달 수 없음, 닫는 괄호나 쉼표 오타에 매우 엄격하며 바이너리 데이터를 직접 담기 비효율적 |
+
+### 3) 실무 유즈케이스
+
+    * **REST API 기반의 웹 클라이언트-서버 데이터 통신**
+        리액트(React) 웹 브라우저에서 회원 가입 버튼을 눌렀을 때, 사용자가 입력한 아이디와 비밀번호를 자바스크립트 객체 `{ id: "user123", pw: "12345" }` 형태로 모읍니다. 이 자바스크립트 객체를 그대로 네트워크에 쏠 수 없기 때문에 `JSON.stringify()`를 통해 문자열 `"{ \"id\": \"user123\", \"pw\": \"12345\" }"`로 직렬화(Serialization)하여 스프링 부트나 노드 백엔드 서버로 전송합니다. 백엔드 서버는 이 텍스트를 받아 자기 언어(Java, Python 등)에 맞는 내부 객체로 역직렬화(Deserialization)하여 데이터를 읽습니다.
+
+    * **애플리케이션 및 모듈 설정 파일 관리 (`package.json`, `tsconfig.json`)**
+        Node.js 프로젝트의 메타데이터와 의존성을 정의하는 `package.json`이나 TypeScript 설정 파일인 `tsconfig.json`처럼 데이터의 계층 구조가 뚜렷하고 기계가 빠르게 파싱해야 하는 설정 정보를 텍스트 파일로 관리할 때 채택합니다. 사람이 직접 읽고 편집하기도 직관적이며 프로그램에서 자동으로 불러와 유효성 검증을 수행하기 용이합니다.
+
+### 4) 관련 키워드
+
+    * **데이터 포맷 및 전송**: `JSON` / `XML` / `YAML` / `Protocol Buffers` / `MessagePack` / `BSON` / `REST API` / `AJAX`
+    * **직렬화 및 동작**: `Serialization (직렬화)` / `Deserialization (역직렬화)` / `JSON.parse()` / `JSON.stringify()` / `MIME Type (application/json)`
+    * **구조 및 사양**: `Key-Value Pair` / `Nested Object` / `UTF-8` / `IETF RFC 8259` / `JSON Schema` / `Douglas Crockford`
 
 [🔝목차로 이동](#목차)
 
